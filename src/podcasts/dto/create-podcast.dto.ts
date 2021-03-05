@@ -12,7 +12,7 @@ export class CreatePodcastInput extends CoreEntity {
     @Field(type => Number)
     rating: number;
     @Field(type => Episode)
-    episodes: Episode[];
+    episodes?: Episode[];
 };
 
 @ObjectType()

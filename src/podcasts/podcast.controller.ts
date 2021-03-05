@@ -8,6 +8,8 @@ import { CreatePodcastInput, CreatePodcastOutput } from "./dto/create-podcast.dt
 import { updatePodcastOutput, updatePodcastInput } from "./dto/update-podcast";
 import { CoreOutput } from "./common/output.dto";
 import { UpdateEpisodeOutput, UpdateEpisodeInput } from "./dto/update-episode";
+import { DeleteInput } from "./dto/delete.dto";
+import { SearchPodcastInput, SearchOutput } from "./dto/search.dto";
 
 @Controller('podcasts')
 @Resolver(of => Podcast)
@@ -17,7 +19,7 @@ export class PodcastController {
     ) {}
     @Get()
     @Query(returns => Podcast)
-    getPodcast(): Podcast[] {
+    getPodcast() {
         return this.podcastService.getHome();
     };
 
@@ -30,13 +32,15 @@ export class PodcastController {
 
     @Get("/:id")
     @Query(returns => Podcast)
-    getPodcastId(@Param("id") id:string) {
+    getPodcastId(
+        @Args('input') {id}: SearchPodcastInput
+    ): SearchOutput {
         return this.podcastService.getPodcastOne(id);
     };
     
     @Patch("/:id") 
     @Mutation(returns => updatePodcastOutput)
-    patchPodcastId(@Args('input') @Param("id") id:string, @Body() podcastData: updatePodcastInput
+    patchPodcastId(@Args('input') @Param("id") id:number, @Body() podcastData: updatePodcastInput
     ): updatePodcastOutput { 
         return this.podcastService.updatePodcast(id, podcastData);
     };
@@ -49,15 +53,14 @@ export class PodcastController {
 
     @Get("/:id/episode")
     @Query(returns => Episode)
-    getEpisodeId(): Episode[] {
+    getEpisodeId(): CoreOutput {
         return this.podcastService.getEpisode();
     };
 
     @Post("/:id/episode")
     @Mutation(returns => CreateEpisodeOutput)
     postEpisodeId(
-        @Args('input') 
-        @Body() episodeData: CreateEpisodeInput
+        @Args('input') episodeData: CreateEpisodeInput
     ): CreateEpisodeOutput {
         return this.podcastService.PostEpisode(episodeData);
     };
@@ -65,18 +68,18 @@ export class PodcastController {
     @Patch("/:id/episode/:episodeId")
     @Mutation(returns => UpdateEpisodeOutput)
     patchEpisodeId(
-        @Args('input') 
-        @Param("episodeId") 
-        id: string, 
-        @Body() episodeData: UpdateEpisodeInput
+        @Param("episodeId") id: string, 
+        @Args('input') episodeData: UpdateEpisodeInput
     ): UpdateEpisodeOutput {
         return this.podcastService.updateEpisode(id, episodeData);
     };
 
     @Delete("/:id/episode/:episodeId")
     @Mutation(returns => CoreOutput)
-    deleteEpisodeId(@Args('input')
-    @Param("episodeId") id: string): CoreOutput {
+    deleteEpisodeId(
+        @Param("episodeId") id: string,
+        @Args('input') deleteData: DeleteInput
+        ): CoreOutput {
         return this.podcastService.deleteEpisode(id);
     }
 }

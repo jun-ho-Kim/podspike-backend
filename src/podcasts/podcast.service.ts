@@ -3,38 +3,55 @@ import { Podcast } from "./entity/podcast.entity";
 import { Episode } from "./episode/episode.entity";
 import { updatePodcastInput } from "./dto/update-podcast";
 import { UpdateEpisodeInput } from "./dto/update-episode";
+import { Repository } from "../../node_modules/typeorm";
+import { CreatePodcastInput, CreatePodcastOutput } from "./dto/create-podcast.dto";
+import { CoreOutput } from "./common/output.dto";
+import { SearchOutput } from "./dto/search.dto";
+import { identifier } from "../../node_modules/@babel/types";
+import { InjectRepository } from "../../node_modules/@nestjs/typeorm";
+import { CreateEpisodeInput } from "./dto/create-episode";
 
 @Injectable()
 export class PodcastService {
-    private podcasts: Podcast[] = [];
-    private episodes: Episode[] = [];
+    constructor(
+        @InjectRepository(Podcast)
+        private readonly podcasts: Repository<Podcast>,
+        @InjectRepository(Episode)
+        private readonly episodes: Repository<Episode>
+    ) {}
 
-    getHome(): Podcast[] {
-        return this.podcasts;
+    getHome() {
+        return this.podcasts.find();
     };
 
-    createChannel(podcastData: Podcast) {
-        this.podcasts.push({
-            id: this.podcasts.length +1,
-            ... podcastData
-        });
+    createChannel(podcastData: CreatePodcastInput
+    ): CreatePodcastOutput {
+        this.podcasts.save(
+            this.podcasts.create({
+                ...podcastData
+            })
+        );
         return {
             ok: true,
             error: null,
         }
     };
 
-    getPodcastOne(id: string): Podcast {
-        const podcast = this.podcasts.find(podcast => podcast.id === +id);
+    getPodcastOne(id: number): SearchOutput {
+        const podcast = this.podcasts.findOne(id);
         if(!podcast) {
-            throw new NotFoundException(`podcast with ID: ${id} NOT FOUND`)
+            return {
+                ok: false,
+                error: `Not Found Podcast ${id}`}
         }
-        return podcast;
+        return {
+            ok: true,
+            error: null,
+        };
     };
 
     deletePodcast(id: string) {
-        this.getPodcastOne(id);
-        this.podcasts = this.podcasts.filter(podcasts => podcasts.id !== +id)
+        this.podcasts.delete(id)
         try {
             return {
                 ok: true
@@ -47,11 +64,10 @@ export class PodcastService {
         }
     };
 
-    updatePodcast(id: string, updateData: updatePodcastInput) {
+    updatePodcast(id: number, updateData: updatePodcastInput) {
         const podcast = this.getPodcastOne(id);
         if(podcast) {
-            this.deletePodcast(id);
-            this.podcasts.push({...podcast, ...updateData})
+            this.podcasts.update(id, { ...updateData})
             return {
                 ok: true,
                 error: null,
@@ -63,16 +79,29 @@ export class PodcastService {
         };
     };
 
-    getEpisode(): Episode[] {
-        return this.episodes;
+    getEpisode(): CoreOutput {
+        try{
+            this.podcasts.find();
+            return {
+                ok: true,
+                error: null,
+            };
+        } catch(error) {
+            return {
+                ok: false,
+                error,
+            }
+        }
     };
 
-    PostEpisode(episodeData: Episode) {
+    PostEpisode(episodeData: CreateEpisodeInput): CoreOutput
+     {
         try{
-            this.episodes.push({
-                id: this.episodes.length +1,
+            this.episodes.save(
+                this.episodes.create({
                 ...episodeData
-            });
+                })
+            )
             return {
                 ok: true,
                 error: null,
@@ -87,7 +116,7 @@ export class PodcastService {
 
     deleteEpisode(id:string) {
         try {
-            this.episodes.filter(episodes => episodes.id === +id);
+            this.episodes.delete(id);
             return {
                 ok: true
             };
@@ -101,9 +130,7 @@ export class PodcastService {
 
     updateEpisode(id: string, episodeData: UpdateEpisodeInput) {
         try {
-            this.deleteEpisode(id);
-            this.episodes.push({
-                id,
+            this.episodes.update(id, {
                 ...episodeData
             });
             return {

@@ -1,13 +1,11 @@
 import { CoreEntity } from "../common/entities/coreEntity";
-import { Field, InputType, ObjectType } from "../../../node_modules/@nestjs/graphql";
+import { Field, InputType, ObjectType, PartialType } from "../../../node_modules/@nestjs/graphql";
 import { CoreOutput } from "../common/output.dto";
+import { Episode } from "../episode/episode.entity";
 
-@InputType()
-export class CreateEpisodeInput extends CoreEntity {
-    @Field(type => String)
-    title: string;
-    @Field(type => String)
-    category: string;
+@InputType({ isAbstract: true })
+export class CreateEpisodeInput extends PartialType(Episode) {
+
 }
 
 @ObjectType()
