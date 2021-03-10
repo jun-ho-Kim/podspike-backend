@@ -3,11 +3,11 @@ import { InjectRepository } from '../../node_modules/@nestjs/typeorm';
 import { User } from './entites/user.entity';
 import { Repository } from '../../node_modules/typeorm';
 import { CreateAccountInput, CreateAccountOutput } from './entites/create-account.dto';
-import { CoreOutput } from '../podcasts/common/output.dto';
 import { UserProfileOutput } from './dtos/user-profile.dto';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
 import { JwtService } from '../jwt/jwt.service';
-import { editProfileInput } from './dtos/edit-profile.dto';
+import { EditProfileOutput, EditProfileInput } from './dtos/edit-profile.dto';
+import { SeeProfileOutput, SeeProfileInput } from './dtos/see-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -101,4 +101,53 @@ export class UsersService {
             }
         }
     };
+    async editProfile(
+        authUser: User,
+        {email, password, name}: EditProfileInput
+    ): Promise<EditProfileOutput> {
+        try {
+            const user = await this.users.findOne(authUser.id);
+            if(email) {
+                user.email = email;
+            }
+            if(password) {
+                user.password = password;
+            }
+            if(name) {
+                user.name = name;
+            }
+            await this.users.save(user);
+            return {
+                ok: true,
+            }
+        } catch {
+            return {
+                ok: false,
+                error: 'Could not update profile',
+            }
+        }
+    };
+
+    async seeProfile(
+        {userId}: SeeProfileInput
+    ): Promise<SeeProfileOutput> {
+        try {
+            const user = await this.users.findOne(userId);
+            if(!user) {
+                return {
+                    ok: false,
+                    error: "User not Found",
+                }
+            }
+            return {
+                user,
+                ok: false,
+            }
+        } catch {
+            return {
+                ok: true,
+                error: ""
+            }
+        }
+    }
 }

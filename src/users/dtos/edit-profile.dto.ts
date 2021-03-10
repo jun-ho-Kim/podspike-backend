@@ -3,9 +3,9 @@ import { User } from "../entites/user.entity";
 import { CoreOutput } from "../../podcasts/common/output.dto";
 
 @InputType()
-export class editProfileInput extends PartialType(
+export class EditProfileInput extends PartialType(
     PickType(User, ['email', 'name', 'password',])
 ) {}
 
 @ObjectType()
-export class editProfileOutput extends CoreOutput {}
+export class EditProfileOutput extends CoreOutput {}

@@ -3,6 +3,9 @@ import { User } from './entites/user.entity';
 import { UsersService } from './users.service';
 import { CreateAccountInput, CreateAccountOutput } from './entites/create-account.dto';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
+import { AuthUser } from '../auth/auth-user.decorator';
+import { SeeProfileInput, SeeProfileOutput } from './dtos/see-profile.dto';
+import { UseGuards } from '../../node_modules/@nestjs/common';
 
 @Resolver(of => User)
 export class UsersResolver {
@@ -20,10 +23,17 @@ export class UsersResolver {
         return this.usersService.createAccount(createAccountInput);
     }
 
+    @UseGuards(AuthUser)
     @Mutation(returns => User)
     login(
         @Args('input') loginInput: LoginInput): Promise<LoginOutput> {
             return this.usersService.login(loginInput);
         }
-
+    
+    @Query(returns => User)
+    seeProfile(
+        @Args('input') seeProfileInput: SeeProfileInput
+    ): Promise<SeeProfileOutput> {
+         return this.usersService.seeProfile(seeProfileInput);
+    }
 };
