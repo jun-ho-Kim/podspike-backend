@@ -5,9 +5,9 @@ import { PodcastModule } from './podcasts/podcast.module';
 import { GraphQLModule } from '../node_modules/@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
-import { UserResolver } from './user/user.resolver';
 import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
+import { UsersResolver } from './users/users.resolver';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { JwtMiddleware } from './jwt/jwt.middleware';
     JwtModule,
   ],
   controllers: [AppController],
-  providers: [AppService, UserResolver],
+  providers: [AppService, UsersResolver],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
