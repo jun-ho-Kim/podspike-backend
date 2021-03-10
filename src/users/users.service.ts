@@ -7,6 +7,7 @@ import { CoreOutput } from '../podcasts/common/output.dto';
 import { UserProfileOutput } from './dtos/user-profile.dto';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
 import { JwtService } from '../jwt/jwt.service';
+import { editProfileInput } from './dtos/edit-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -98,6 +99,6 @@ export class UsersService {
                 error: "User not found",
                 ok: false,
             }
-        };
-    }
+        }
+    };
 }
