@@ -31,7 +31,7 @@ export class UsersService {
             if(exist) {
                 return {
                     ok: false,
-                    error: "There is user with that email alread"
+                    error: 'There is user with that email already'
                 };
             }
             if(password !== passwordConfirm) {
@@ -41,17 +41,17 @@ export class UsersService {
                 }
             }
             await this.users.save( 
-                this.users.create({email, name, password, role})
+                this.users.create({email, name, password, passwordConfirm,  role})
             )
 
             return {
                 ok: true,
-                error: null,
+
             }
         } catch {
             return {
                 ok: false,
-                error: ""
+                error: 'Could`t create account',
             }
         }
     };
@@ -102,11 +102,11 @@ export class UsersService {
         }
     };
     async editProfile(
-        authUser: User,
+        userId: number,
         {email, password, name}: EditProfileInput
     ): Promise<EditProfileOutput> {
         try {
-            const user = await this.users.findOne(authUser.id);
+            const user = await this.users.findOne(userId);
             if(email) {
                 user.email = email;
             }
@@ -129,7 +129,7 @@ export class UsersService {
     };
 
     async seeProfile(
-        {userId}: SeeProfileInput
+        userId: number
     ): Promise<SeeProfileOutput> {
         try {
             const user = await this.users.findOne(userId);
@@ -141,12 +141,12 @@ export class UsersService {
             }
             return {
                 user,
-                ok: false,
+                ok: true,
             }
         } catch {
             return {
-                ok: true,
-                error: ""
+                ok: false,
+                error: "User not Found",
             }
         }
     }

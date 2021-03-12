@@ -9,23 +9,32 @@ import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { UsersResolver } from './users/users.resolver';
 import { AuthModule } from './auth/auth.module';
+import { Episode } from './podcasts/episode/episode.entity';
+import { User } from './users/entites/user.entity';
+import { Podcast } from './podcasts/entity/podcast.entity';
 
 @Module({
   imports: [
     PodcastModule, 
-    GraphQLModule.forRoot({ autoSchemaFile: true }),
+    GraphQLModule.forRoot({ 
+      autoSchemaFile: true,
+      context: ({ req }) => {
+        return { user: req['user'] };
+      },
+    }),
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'db.sqlite',
       logging: true,
       synchronize: true,
+      entities: [Podcast, Episode, User],
     }),
     UsersModule,
     JwtModule,
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, UsersResolver],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

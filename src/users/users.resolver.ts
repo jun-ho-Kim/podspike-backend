@@ -6,15 +6,16 @@ import { LoginInput, LoginOutput } from './dtos/login.dto';
 import { AuthUser } from '../auth/auth-user.decorator';
 import { SeeProfileInput, SeeProfileOutput } from './dtos/see-profile.dto';
 import { UseGuards } from '../../node_modules/@nestjs/common';
+import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
 
 @Resolver(of => User)
 export class UsersResolver {
     constructor(private readonly usersService: UsersService) {}
 
-    @Query(returns => User)
-    me() {
-        return '';
-    }
+    // @Query(returns => User)
+    // me() {
+    //     return '';
+    // }
 
     @Mutation(returns => User)
     async createAccount(
@@ -34,6 +35,14 @@ export class UsersResolver {
     seeProfile(
         @Args('input') seeProfileInput: SeeProfileInput
     ): Promise<SeeProfileOutput> {
-         return this.usersService.seeProfile(seeProfileInput);
+         return this.usersService.seeProfile(seeProfileInput.userId);
+    }
+
+    @Mutation(returns => User)
+    EditProfileInput(
+        @AuthUser() owner: User,
+        @Args('input') editProfileInput: EditProfileInput
+    ): Promise<EditProfileOutput> {
+        return this.usersService.editProfile(owner.id, editProfileInput)
     }
 };
