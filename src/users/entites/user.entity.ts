@@ -6,8 +6,8 @@ import * as bcrypt from "bcrypt";
 import { InternalServerErrorException } from "../../../node_modules/@nestjs/common";
 
 export enum UserRole {
-    "Host",
-    "Listner",
+    Host = "Host",
+    Listner= "Listner",
 } 
 
 @InputType("UserInputType", {isAbstract: true})

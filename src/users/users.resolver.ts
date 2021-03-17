@@ -7,6 +7,7 @@ import { AuthUser } from '../auth/auth-user.decorator';
 import { SeeProfileInput, SeeProfileOutput } from './dtos/see-profile.dto';
 import { UseGuards } from '../../node_modules/@nestjs/common';
 import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
+import { Role } from 'src/auth/role.decorator';
 
 @Resolver(of => User)
 export class UsersResolver {
@@ -30,8 +31,9 @@ export class UsersResolver {
         @Args('input') loginInput: LoginInput): Promise<LoginOutput> {
             return this.usersService.login(loginInput);
         }
-    
+        
     @Query(returns => User)
+    @Role("Any")
     seeProfile(
         @Args('input') seeProfileInput: SeeProfileInput
     ): Promise<SeeProfileOutput> {
@@ -39,6 +41,7 @@ export class UsersResolver {
     }
 
     @Mutation(returns => User)
+    @Role("Any")
     EditProfileInput(
         @AuthUser() owner: User,
         @Args('input') editProfileInput: EditProfileInput

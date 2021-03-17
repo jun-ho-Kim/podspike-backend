@@ -10,6 +10,7 @@ import { CoreOutput } from "./common/output.dto";
 import { UpdateEpisodeOutput, UpdateEpisodeInput } from "./dto/update-episode";
 import { DeleteInput } from "./dto/delete.dto";
 import { SearchPodcastInput, SearchOutput } from "./dto/search.dto";
+import { Role } from "src/auth/role.decorator";
 
 @Controller('podcasts')
 @Resolver(of => Podcast)
@@ -25,6 +26,7 @@ export class PodcastController {
 
     @Post()
     @Mutation(returns => CreatePodcastOutput)
+    @Role("Host")
     createChannel(@Args('input') @Body() podcastData: CreatePodcastInput
     ): CreatePodcastOutput {
         return this.podcastService.createChannel(podcastData);
@@ -32,6 +34,7 @@ export class PodcastController {
 
     @Get("/:id")
     @Query(returns => Podcast)
+    @Role('Any')
     getPodcastId(
         @Args('input') {id}: SearchPodcastInput
     ): SearchOutput {
@@ -40,6 +43,7 @@ export class PodcastController {
     
     @Patch("/:id") 
     @Mutation(returns => updatePodcastOutput)
+    @Role("Host")
     patchPodcastId(@Args('input') @Param("id") id:number, @Body() podcastData: updatePodcastInput
     ): updatePodcastOutput { 
         return this.podcastService.updatePodcast(id, podcastData);
@@ -47,6 +51,7 @@ export class PodcastController {
 
     @Delete("/:id")
     @Mutation(returns => CoreOutput)
+    @Role("Host")
     deletePodcastId(@Args('input') @Param("id") id: string): CoreOutput {
         return this.podcastService.deletePodcast(id);
     };
@@ -59,6 +64,7 @@ export class PodcastController {
 
     @Post("/:id/episode")
     @Mutation(returns => CreateEpisodeOutput)
+    @Role("Host")
     postEpisodeId(
         @Args('input') episodeData: CreateEpisodeInput
     ): CreateEpisodeOutput {
@@ -67,6 +73,7 @@ export class PodcastController {
 
     @Patch("/:id/episode/:episodeId")
     @Mutation(returns => UpdateEpisodeOutput)
+    @Role("Host")
     patchEpisodeId(
         @Param("episodeId") id: string, 
         @Args('input') episodeData: UpdateEpisodeInput
@@ -76,6 +83,7 @@ export class PodcastController {
 
     @Delete("/:id/episode/:episodeId")
     @Mutation(returns => CoreOutput)
+    @Role("Host")
     deleteEpisodeId(
         @Param("episodeId") id: string,
         @Args('input') deleteData: DeleteInput
