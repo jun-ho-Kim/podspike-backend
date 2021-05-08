@@ -9,6 +9,12 @@ export class GetPodcastInput {
 };
 
 @ObjectType()
+export class GetAllPodcastOutput extends CoreOutput {
+    @Field(type => [Podcast])
+    podcast?: Podcast[];
+};
+
+@ObjectType()
 export class GetPodcastOutput extends CoreOutput {
     @Field(type => Podcast)
     podcast?: Podcast;

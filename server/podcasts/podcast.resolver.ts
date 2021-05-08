@@ -1,4 +1,3 @@
-import { Get, Post, Param, Patch, Delete, Body } from "@nestjs/common";
 import { PodcastService } from "./podcast.service";
 import { Podcast } from "./entity/podcast.entity";
 import { Episode } from "./entity/episode.entity";
@@ -8,30 +7,29 @@ import { CreatePodcastInput, CreatePodcastOutput } from "./dto/create-podcast.dt
 import { UpdatePodcastOutput, UpdatePodcastInput } from "./dto/update-podcast";
 import { CoreOutput } from "./common/output.dto";
 import { UpdateEpisodeOutput, UpdateEpisodeInput } from "./dto/update-episode";
-import { GetPodcastInput, GetPodcastOutput } from "./dto/get-podcast";
+import { GetAllPodcastOutput, GetPodcastInput, GetPodcastOutput } from "./dto/get-podcast";
 import { DeleteInput, DeleteOutput, EpisodeSearchInput } from "./dto/delete.dto";
 import { GetEpisodeInput, GetEpisodeOutput } from "./dto/get-episode";
 
 @Resolver(of => Podcast)
-export class PodcastController {
+export class PodcastResolver {
     constructor(
         private readonly podcastService: PodcastService
     ) {}
 
-    @Query(returns => Podcast)
-    getPodcast(): Podcast[] {
-        return this.podcastService.getHome();
+    @Query(returns => GetAllPodcastOutput)
+    getPodcast(): GetAllPodcastOutput {
+        return this.podcastService.getAllPodcast();
     };
 
     @Mutation(returns => CreatePodcastOutput)
-    createChannel(@Args('input') createPodcastInput: CreatePodcastInput
+    createPodcast(@Args('input') createPodcastInput: CreatePodcastInput
     ): CreatePodcastOutput {
         return this.podcastService.createPodcast(createPodcastInput);
     };
 
-    
     @Query(returns => GetPodcastOutput)
-    getPodcastId(@Args('input') getPodcastInput: GetPodcastInput) {
+    getPodcastOne(@Args('input') getPodcastInput: GetPodcastInput) {
         return this.podcastService.getPodcastOne(getPodcastInput.id);
     };
     
@@ -41,15 +39,14 @@ export class PodcastController {
         return this.podcastService.updatePodcast(updatePodcastInput);
     };
 
-
     @Mutation(returns => CoreOutput)
     deletePodcastId(@Args('input') {id}: DeleteInput): DeleteOutput {
         return this.podcastService.deletePodcast(id);
     };
 
-    @Query(returns => Episode)
-    getEpisodeId(getEpisodeInput: GetEpisodeInput): GetEpisodeOutput {
-        return this.podcastService.getEpisode(getEpisodeInput);
+    @Query(returns => GetEpisodeOutput)
+    getAllEpisode(@Args('input') getEpisodeInput: GetEpisodeInput): GetEpisodeOutput {
+        return this.podcastService.getAllEpisode(getEpisodeInput);
     };
 
     @Mutation(returns => CreateEpisodeOutput)

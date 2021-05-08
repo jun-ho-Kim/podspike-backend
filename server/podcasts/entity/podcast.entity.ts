@@ -11,6 +11,6 @@ export class Podcast {
     category: string;
     @Field(type => Number)
     rating?: number;
-    @Field(type => Episode)
+    @Field(type => [Episode])
     episodes?: Episode[];
 };

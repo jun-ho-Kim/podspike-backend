@@ -1,7 +1,6 @@
-import { CoreEntity } from "../common/entities/coreEntity";
 import { Field, InputType, ObjectType } from "@nestjs/graphql";
-import { Episode } from "../entity/episode.entity";
 import { CoreOutput } from "../common/output.dto";
+import { Episode } from "../entity/episode.entity";
 import { Podcast } from "../entity/podcast.entity";
 
 @InputType()
@@ -10,6 +9,8 @@ export class CreatePodcastInput {
     title: string;
     @Field(type => String)
     category: string;
+    @Field((type) => [Episode], { nullable: true })
+    episodes?: Episode[];
 };
 
 @ObjectType()
