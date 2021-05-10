@@ -1,5 +1,5 @@
 import { CoreEntity } from "../common/entities/coreEntity";
-import { Field, InputType, IntersectionType, ObjectType, PickType } from "../../../node_modules/@nestjs/graphql";
+import { Field, InputType, IntersectionType, ObjectType, PickType } from "@nestjs/graphql";
 import { CoreOutput } from "../common/output.dto";
 import { PodcastSearchInput } from "./podcast.dto";
 import { Episode } from "../entity/episode.entity";

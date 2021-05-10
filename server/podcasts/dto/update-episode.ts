@@ -1,4 +1,4 @@
-import { Field, ObjectType, InputType, IntersectionType, PartialType, PickType } from "../../../node_modules/@nestjs/graphql";
+import { Field, ObjectType, InputType, IntersectionType, PartialType, PickType } from "@nestjs/graphql";
 import { CoreOutput } from "../common/output.dto";
 import { Episode } from "../entity/episode.entity";
 import { EpisodeSearchInput } from "./podcast.dto";

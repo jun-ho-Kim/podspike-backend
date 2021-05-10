@@ -1,4 +1,4 @@
-import { Injectable } from "../../node_modules/@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { Podcast } from "./entity/podcast.entity";
 import { Episode } from "./entity/episode.entity";
 import { UpdatePodcastInput, UpdatePodcastOutput } from "./dto/update-podcast";

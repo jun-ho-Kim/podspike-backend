@@ -1,8 +1,9 @@
 import { Episode } from "./episode.entity";
-import { Field, InputType, ObjectType } from "../../../node_modules/@nestjs/graphql";
-import { Column, Entity, OneToMany } from "typeorm";
+import { Field, InputType, ObjectType } from "@nestjs/graphql";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { IsNumber, IsString } from "class-validator";
 import { CoreEntity } from "../common/entities/coreEntity";
+import { User } from "server/user/entity/user.entity";
 
 @InputType('PodcastInput', { isAbstract: true })
 @ObjectType()
@@ -28,4 +29,11 @@ export class Podcast extends CoreEntity {
         cascade: true,
     })
     episodes?: Episode[];
+
+    @Field(type => User)
+    @ManyToOne(
+        type => User,
+        user => user.podcasts
+    )
+    user: User
 };

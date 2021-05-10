@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "../../../node_modules/@nestjs/graphql";
+import { Field, ObjectType } from "@nestjs/graphql";
 
 @ObjectType()
 export class CoreOutput {

@@ -1,6 +1,6 @@
 import { IsDate, IsNumber } from "class-validator";
 import { CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Field, ObjectType } from "../../../../node_modules/@nestjs/graphql";
+import { Field, ObjectType } from "@nestjs/graphql";
 
 @Entity()
 @ObjectType()
