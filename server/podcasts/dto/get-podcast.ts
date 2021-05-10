@@ -1,11 +1,9 @@
-import { Field, InputType, ObjectType } from "@nestjs/graphql";
+import { Field, InputType, ObjectType, PickType } from "@nestjs/graphql";
 import { CoreOutput } from "../common/output.dto";
 import { Podcast } from "../entity/podcast.entity";
 
 @InputType()
-export class GetPodcastInput {
-    @Field(type => Number)
-    id: number;
+export class GetPodcastInput extends PickType(Podcast, ['id']) {
 };
 
 @ObjectType()
@@ -16,6 +14,6 @@ export class GetAllPodcastOutput extends CoreOutput {
 
 @ObjectType()
 export class GetPodcastOutput extends CoreOutput {
-    @Field(type => Podcast)
+    @Field(type => Podcast, {nullable: true})
     podcast?: Podcast;
 };

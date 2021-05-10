@@ -1,18 +1,14 @@
 import { CoreEntity } from "../common/entities/coreEntity";
-import { Field, InputType, ObjectType } from "../../../node_modules/@nestjs/graphql";
+import { Field, InputType, IntersectionType, ObjectType, PickType } from "../../../node_modules/@nestjs/graphql";
 import { CoreOutput } from "../common/output.dto";
 import { PodcastSearchInput } from "./podcast.dto";
 import { Episode } from "../entity/episode.entity";
 
 @InputType()
-export class CreateEpisodeInput {
-    @Field(type => Number)
-    podcastId: number;
-    @Field(type => String)
-    title: string;
-    @Field(type => String)
-    category: string;
-}
+export class CreateEpisodeInput extends IntersectionType(
+    PodcastSearchInput,
+    PickType(Episode, ['title', 'category'] as const),
+  ) {}
 
 @ObjectType()
 export class CreateEpisodeOutput extends CoreOutput {
