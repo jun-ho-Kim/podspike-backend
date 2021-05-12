@@ -10,6 +10,8 @@ import { UpdateEpisodeOutput, UpdateEpisodeInput } from "./dto/update-episode";
 import { GetAllPodcastOutput, GetPodcastInput, GetPodcastOutput } from "./dto/get-podcast";
 import { GetEpisodeInput, GetEpisodeOutput } from "./dto/get-episode";
 import { EpisodeSearchInput, PodcastSearchInput } from "./dto/podcast.dto";
+import { UseGuards } from "@nestjs/common";
+import { AuthGuard } from "server/auth/auth.guard";
 
 @Resolver(of => Podcast)
 export class PodcastResolver {
@@ -21,7 +23,7 @@ export class PodcastResolver {
     getPodcast(): Promise<GetAllPodcastOutput> {
         return this.podcastService.getAllPodcast();
     };
-
+    @UseGuards(AuthGuard)
     @Mutation(returns => CreatePodcastOutput)
     createPodcast(@Args('input') createPodcastInput: CreatePodcastInput
     ): Promise<CreatePodcastOutput> {
@@ -33,13 +35,13 @@ export class PodcastResolver {
     ): Promise<GetPodcastOutput> {
         return this.podcastService.getPodcastOne(getPodcastInput.id);
     };
-    
+    @UseGuards(AuthGuard)
     @Mutation(returns => UpdatePodcastOutput)
     updatePodcast(@Args('input') updatePodcastInput: UpdatePodcastInput
     ): Promise<UpdatePodcastOutput> { 
         return this.podcastService.updatePodcast(updatePodcastInput);
     };
-
+    @UseGuards(AuthGuard)
     @Mutation(returns => CoreOutput)
     deletePodcast(@Args('input') {id}: PodcastSearchInput
     ): Promise<CoreOutput> {

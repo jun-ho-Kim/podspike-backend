@@ -34,6 +34,11 @@ export class UserResolver {
     ): Promise<SeeProfileOutput> {
         return this.userService.seeProfile(seeProfileInput)
     };
+    // @UseGuards(AuthGuard)
+    @Query(returns => User)
+    me(@AuthUser() authUser: User): User {
+        return authUser;
+    }
 
     @UseGuards(AuthGuard)
     @Mutation(Returns => EditProfileOutput)
