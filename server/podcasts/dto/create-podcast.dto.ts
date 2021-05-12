@@ -1,5 +1,5 @@
 import { Field, InputType, ObjectType, PickType } from "@nestjs/graphql";
-import { CoreOutput } from "../common/output.dto";
+import { CoreOutput } from "../../common/output.dto";
 import { Episode } from "../entity/episode.entity";
 import { Podcast } from "../entity/podcast.entity";
 

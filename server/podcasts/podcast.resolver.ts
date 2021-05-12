@@ -5,7 +5,7 @@ import { Resolver, Query, Mutation, Args } from "@nestjs/graphql";
 import { CreateEpisodeOutput, CreateEpisodeInput } from "./dto/create-episode";
 import { CreatePodcastInput, CreatePodcastOutput } from "./dto/create-podcast.dto";
 import { UpdatePodcastOutput, UpdatePodcastInput } from "./dto/update-podcast";
-import { CoreOutput } from "./common/output.dto";
+import { CoreOutput } from "../common/output.dto";
 import { UpdateEpisodeOutput, UpdateEpisodeInput } from "./dto/update-episode";
 import { GetAllPodcastOutput, GetPodcastInput, GetPodcastOutput } from "./dto/get-podcast";
 import { GetEpisodeInput, GetEpisodeOutput } from "./dto/get-episode";

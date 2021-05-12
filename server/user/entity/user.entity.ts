@@ -1,14 +1,20 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, InputType, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { IsEnum, IsString } from "class-validator";
-import { CoreEntity } from "server/podcasts/common/entities/coreEntity";
+import { CoreEntity } from "server/common/entities/coreEntity";
 import { Podcast } from "server/podcasts/entity/podcast.entity";
-import { Column, Entity, OneToMany } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from "typeorm";
+import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
+import { InternalServerErrorException } from "@nestjs/common";
+        
 
 export enum UserRole  {
     Host = "Host",
     Listener = "Listener",
 };
 
+registerEnumType(UserRole, { name: 'UserRole' })
+@InputType("UserInputType", { isAbstract: true })
 @ObjectType()
 @Entity()
 export class User extends CoreEntity {
@@ -22,17 +28,41 @@ export class User extends CoreEntity {
     @IsString()
     password: string;
 
-    @Column({type: 'enum', enum: UserRole})
-    @Field()
+    @Column()
+    @Field(type => String)
+    @IsString()
+    passwordConfirm: string;
+
+    @Column()
+    @Field(type => UserRole)
     @IsEnum(UserRole)
     role: UserRole;
 
-    @Column()
     @Field(type => [Podcast])
     @OneToMany(
         type => Podcast,
-        podcast => podcast.user,
+        podcast => podcast.user
     )
     podcasts: Podcast[];
+    
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    async hashPassowrd(): Promise<void> {
+        try {
+            const saltRounds = 10;
+            this.password = await bcrypt.hash(this.password, saltRounds)
+        } catch {
+            throw new InternalServerErrorException();
+        } 
+    };
+    async checkPassword(aPassword: string): Promise<boolean> {
+        try {
+            const ok = bcrypt.compare(aPassword, this.password);
+            return ok
+        } catch {
+            throw new InternalServerErrorException();
+        }
+    }
     
 }

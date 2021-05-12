@@ -5,7 +5,7 @@ import { UpdatePodcastInput, UpdatePodcastOutput } from "./dto/update-podcast";
 import { UpdateEpisodeInput, UpdateEpisodeOutput } from "./dto/update-episode";
 import { GetAllPodcastOutput, GetPodcastInput, GetPodcastOutput } from "./dto/get-podcast";
 import { CreateEpisodeInput, CreateEpisodeOutput } from "./dto/create-episode";
-import { CoreOutput } from "./common/output.dto";
+import { CoreOutput } from "../common/output.dto";
 
 import { CreatePodcastInput, CreatePodcastOutput } from "./dto/create-podcast.dto";
 import { GetEpisodeInput, GetEpisodeOutput } from "./dto/get-episode";
