@@ -12,6 +12,7 @@ import { GetEpisodeInput, GetEpisodeOutput } from "./dto/get-episode";
 import { EpisodeSearchInput, PodcastSearchInput } from "./dto/podcast.dto";
 import { UseGuards } from "@nestjs/common";
 import { AuthGuard } from "server/auth/auth.guard";
+import { Role } from "server/auth/role.decorator";
 
 @Resolver(of => Podcast)
 export class PodcastResolver {
@@ -23,7 +24,7 @@ export class PodcastResolver {
     getPodcast(): Promise<GetAllPodcastOutput> {
         return this.podcastService.getAllPodcast();
     };
-    @UseGuards(AuthGuard)
+    @Role(["Host"])
     @Mutation(returns => CreatePodcastOutput)
     createPodcast(@Args('input') createPodcastInput: CreatePodcastInput
     ): Promise<CreatePodcastOutput> {
@@ -35,13 +36,15 @@ export class PodcastResolver {
     ): Promise<GetPodcastOutput> {
         return this.podcastService.getPodcastOne(getPodcastInput.id);
     };
-    @UseGuards(AuthGuard)
+
+    @Role(["Host"])
     @Mutation(returns => UpdatePodcastOutput)
     updatePodcast(@Args('input') updatePodcastInput: UpdatePodcastInput
     ): Promise<UpdatePodcastOutput> { 
         return this.podcastService.updatePodcast(updatePodcastInput);
     };
-    @UseGuards(AuthGuard)
+
+    @Role(["Host"])
     @Mutation(returns => CoreOutput)
     deletePodcast(@Args('input') {id}: PodcastSearchInput
     ): Promise<CoreOutput> {
@@ -54,20 +57,21 @@ export class PodcastResolver {
         return this.podcastService.getAllEpisode(getEpisodeInput);
     };
 
+    @Role(["Host"])
     @Mutation(returns => CreateEpisodeOutput)
     createEpisode(
         @Args('input') createEpisodeInput: CreateEpisodeInput
     ): Promise<CreateEpisodeOutput> {
         return this.podcastService.CreateEpisode(createEpisodeInput);
     };
-
+    @Role(["Host"])
     @Mutation(returns => UpdateEpisodeOutput)
     updateEpisode(
         @Args('input') updateEpisodeInput: UpdateEpisodeInput
     ): Promise<UpdateEpisodeOutput> {
         return this.podcastService.updateEpisode(updateEpisodeInput);
     };
-
+    @Role(["Host"])
     @Mutation(returns => CoreOutput)
     deleteEpisode(@Args('input') episodeSearchInput: EpisodeSearchInput
    ): Promise<CoreOutput> {

@@ -13,6 +13,7 @@ import { PodcastModule } from './podcasts/podcast.module';
 import { User } from './user/entity/user.entity';
 import { UserModule } from './user/user.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { JwtMiddleware } from './jwt/jwt.middleware';
     UserModule,
     CommonModule,
     JwtModule,
+    AuthModule,
     GraphQLModule.forRoot({ 
       autoSchemaFile: true ,
       context: ({req}) => {
