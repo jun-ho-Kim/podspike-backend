@@ -10,8 +10,12 @@ import { CoreOutput } from "../common/output.dto";
 import { CreatePodcastInput, CreatePodcastOutput } from "./dto/create-podcast.dto";
 import { GetEpisodeInput, GetEpisodeOutput } from "./dto/get-episode";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Raw, Repository } from "typeorm";
 import { EpisodeSearchInput } from "./dto/podcast.dto";
+import { SearchPodcastInput, SearchPodcastOutput } from "./dto/searchPodcast";
+import { CreateReviewInput, CreateReviewOutput } from "./dto/create-review.dto";
+import { Review } from "./entity/review.entity";
+import { User } from "server/user/entity/user.entity";
 
 @Injectable()
 export class PodcastService {
@@ -20,6 +24,8 @@ export class PodcastService {
         private readonly podcasts: Repository<Podcast>,
         @InjectRepository(Episode)
         private readonly episodes: Repository<Episode>,
+        @InjectRepository(Review)
+        private readonly reviews: Repository<Review>
     ) {}
 
 
@@ -41,13 +47,14 @@ export class PodcastService {
         }
     }
         
-    async createPodcast({title, category}: CreatePodcastInput): Promise<CreatePodcastOutput> {
+    async createPodcast(user, {title, category}: CreatePodcastInput): Promise<CreatePodcastOutput> {
         try {
             const podcast = await this.podcasts.save(
                 this.podcasts.create({
                     title,
                     category,
                     rating: 0,
+                    user,
                 })
             );
             return {
@@ -110,6 +117,31 @@ export class PodcastService {
             };
         }
     };
+
+    async searchPodcast(
+        {query, page}: SearchPodcastInput
+        ): Promise<SearchPodcastOutput> {
+            try {
+                const [podcasts, totalResults] = await this.podcasts.findAndCount({
+                    where: {
+                        title: Raw(name => `${name} Like '%${query}'`)
+                    },
+                    skip: (page-1) * 2,
+                    take: 2,
+                })
+                return {
+                    ok: true,
+                    totalResults,
+                    podcasts,
+                    totalPages: Math.ceil(totalResults),
+                }
+            } catch {
+                return {
+                    ok: false,
+                    error: "Could not search Podcasts",
+                }
+            }
+    }
 
     async getAllEpisode({id: podcastId}: GetEpisodeInput): Promise<GetEpisodeOutput> {
         const {podcast} = await this.getPodcastOne(podcastId)
@@ -181,4 +213,27 @@ export class PodcastService {
             }
         }
     };
+
+    async createReview(creator: User, {podcastId, title, text}: CreateReviewInput): Promise<CreateReviewOutput> {
+        try {
+            const podcast = await this.podcasts.findOne(podcastId)
+            console.log("creatReview podcast", podcast)
+                const reviews = await this.reviews.create({
+                    title,
+                    text,
+                    podcast,
+                    creator
+                })
+                const review = await this.reviews.save(reviews)
+            return {
+                ok: true,
+                review,
+            }
+        } catch {
+            return {
+                ok: false,
+                error: "Fail Create review"
+            }
+        }
+    }
 }

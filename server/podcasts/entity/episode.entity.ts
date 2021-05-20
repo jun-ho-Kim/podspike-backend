@@ -1,5 +1,7 @@
 import { Field, InputType, ObjectType } from "@nestjs/graphql";
 import { IsNumber, IsString } from "class-validator";
+import { userInfo } from "node:os";
+import { User } from "server/user/entity/user.entity";
 import { Column, Entity, ManyToOne } from "typeorm";
 import { CoreEntity } from "../../common/entities/coreEntity";
 import { CoreOutput } from "../../common/output.dto";
@@ -22,4 +24,11 @@ export class Episode extends CoreEntity {
     @ManyToOne(() => Podcast, (podcast) => podcast.episodes)
     @Field(() => Podcast)
     podcast: Podcast;
+
+    @Field(type => User)
+    @ManyToOne(
+        type => User,
+        user => user.playedLists
+    )
+    player: User;
 }

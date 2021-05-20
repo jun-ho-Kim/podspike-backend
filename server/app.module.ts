@@ -14,6 +14,7 @@ import { User } from './user/entity/user.entity';
 import { UserModule } from './user/user.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { AuthModule } from './auth/auth.module';
+import { Review } from './podcasts/entity/review.entity';
 
 @Module({
   imports: [
@@ -33,7 +34,7 @@ import { AuthModule } from './auth/auth.module';
       database: 'db.sqlite',
       logging: true,
       synchronize: true,
-      entities: [Podcast, Episode, CoreEntity, User, CoreOutput, CoreEntity]
+      entities: [Podcast, Episode, CoreEntity, User, CoreOutput, CoreEntity, Review]
     }),
     JwtModule.forRoot({
       privateKey: "nC3mpU2ViYU2XY6t1uw0KseJy9ht6Gwu"

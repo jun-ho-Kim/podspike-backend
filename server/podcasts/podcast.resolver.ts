@@ -13,6 +13,11 @@ import { EpisodeSearchInput, PodcastSearchInput } from "./dto/podcast.dto";
 import { UseGuards } from "@nestjs/common";
 import { AuthGuard } from "server/auth/auth.guard";
 import { Role } from "server/auth/role.decorator";
+import { SearchPodcastInput, SearchPodcastOutput} from "./dto/searchPodcast";
+import { Review } from "./entity/review.entity";
+import { User } from "server/user/entity/user.entity";
+import { CreateReviewInput, CreateReviewOutput } from "./dto/create-review.dto";
+import { AuthUser } from "server/auth/auth.user";
 
 @Resolver(of => Podcast)
 export class PodcastResolver {
@@ -26,9 +31,11 @@ export class PodcastResolver {
     };
     @Role(["Host"])
     @Mutation(returns => CreatePodcastOutput)
-    createPodcast(@Args('input') createPodcastInput: CreatePodcastInput
+    createPodcast(
+        @AuthUser() user: User,
+        @Args('input') createPodcastInput: CreatePodcastInput
     ): Promise<CreatePodcastOutput> {
-        return this.podcastService.createPodcast(createPodcastInput);
+        return this.podcastService.createPodcast(user, createPodcastInput);
     };
 
     @Query(returns => GetPodcastOutput)
@@ -50,6 +57,13 @@ export class PodcastResolver {
     ): Promise<CoreOutput> {
         return this.podcastService.deletePodcast(id);
     };
+
+    @Role(['Listener'])
+    @Query(returns => SearchPodcastOutput)
+    searchPodcast(@Args('input') searchPodcastInput: SearchPodcastInput
+    ): Promise<SearchPodcastOutput> {
+        return this.podcastService.searchPodcast(searchPodcastInput)
+    }
 
     @Query(returns => GetEpisodeOutput)
     getAllEpisode(@Args('input') getEpisodeInput: GetEpisodeInput
@@ -76,5 +90,21 @@ export class PodcastResolver {
     deleteEpisode(@Args('input') episodeSearchInput: EpisodeSearchInput
    ): Promise<CoreOutput> {
         return this.podcastService.deleteEpisode(episodeSearchInput);
+    }
+}
+
+@Resolver(of => Review) 
+export class ReviewResolver {
+    constructor (
+        private readonly podcastService: PodcastService,
+    ) {}
+    
+    @Role(['Listener'])
+    @Mutation(returns => CreateReviewOutput)
+    createReview(
+        @AuthUser() creator: User,
+        @Args('input') createReviewInput: CreateReviewInput
+    ): Promise<CreateReviewOutput> {
+        return this.podcastService.createReview(creator, createReviewInput)
     }
 }

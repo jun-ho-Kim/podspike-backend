@@ -2,11 +2,16 @@ import { Injectable } from "@nestjs/common";
 import { Args } from "@nestjs/graphql";
 import { InjectRepository } from "@nestjs/typeorm";
 import { JwtService } from "server/jwt/jwt.service";
+import { Episode } from "server/podcasts/entity/episode.entity";
+import { Podcast } from "server/podcasts/entity/podcast.entity";
 import { Repository } from "typeorm";
 import { CreateAccountInput, CreateAccountOutput } from "./dto/create-account.dto";
 import { EditProfileInput, EditProfileOutput } from "./dto/editProfile.dto";
 import { LoginInput, LoginOutput } from "./dto/login.dto";
+import { PlayedEpisodedInput, PlayedEpisodedOutput } from "./dto/markEpisodeAsPlayed";
 import { SeeProfileOutput } from "./dto/seeProfile.dto";
+import { SubscribeInput, SubscribeOutput } from "./dto/subscribe";
+import { SubscriptionOutput } from "./dto/subscriptions";
 import { User } from "./entity/user.entity";
 
 @Injectable()
@@ -14,6 +19,10 @@ export class UserService {
     constructor(
         @InjectRepository(User)
         private readonly users: Repository<User>,
+        @InjectRepository(Podcast)
+        private readonly podcasts: Repository<Podcast>,
+        @InjectRepository(Episode)
+        private readonly episodes: Repository<Episode>,
         private readonly jwtService: JwtService,
     ) {}
 
@@ -113,5 +122,49 @@ export class UserService {
                 ok: false,
             }
         }
+    };
+
+    async subscribe(
+        user,{podcastId}: SubscribeInput
+    ): Promise<SubscribeOutput> {
+        try {
+            const podcast = await this.podcasts.findOne({id: podcastId});
+            if(!podcast) {
+                return { ok: false, error: "Podcast not found"}
+            }
+            if(user.subscriptions.some((sub) => sub.id === podcast.id)) {
+                user.subscriptions = user.subscriptions.filter((sub) => sub.id !== podcast.id)
+            } else {
+                user.subscriptions = [...user.subscriptions, podcast];
+            }
+            await this.users.save(user);
+            return {
+                ok: true,
+            }
+        } catch {
+            return {ok: false, error: "Fail subscription "}
+        }
     }
-}   
+
+    async playedLists(
+        user: User,
+        {episodeId}: PlayedEpisodedInput
+    ): Promise<PlayedEpisodedOutput> {
+        try {
+            const episode = await this.episodes.findOne(episodeId)
+            if(!episode) {
+                return {ok: false, error: "Episode not found"}
+            }
+            user.playedLists = [...user.playedLists, episode]
+            await this.users.save(user);
+            return {
+                ok: true,
+                playedLists: user.playedLists,
+            }
+        } catch {
+            return {
+                ok: false,
+            }
+        }
+    }
+} 
