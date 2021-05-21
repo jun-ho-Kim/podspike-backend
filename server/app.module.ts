@@ -71,10 +71,10 @@ import { Review } from './podcasts/entity/review.entity';
   providers: [AppService],
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtMiddleware).forRoutes({
-    path: '/graphql',
-    method: RequestMethod.POST,
-    });
-  }
+  // configure(consumer: MiddlewareConsumer) {
+  //   consumer.apply(JwtMiddleware).forRoutes({
+  //   path: '/graphql',
+  //   method: RequestMethod.POST,
+  //   });
+  // }
 }
