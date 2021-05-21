@@ -17,6 +17,7 @@ import { UserModule } from './user/user.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { AuthModule } from './auth/auth.module';
 import { Review } from './podcasts/entity/review.entity';
+import { SqlInMemory } from 'typeorm/driver/SqlInMemory';
 
 @Module({
   imports: [
@@ -50,15 +51,19 @@ import { Review } from './podcasts/entity/review.entity';
       }
     }),
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      ssl: process.env.NODE_ENV === 'production'
-      ? { rejectUnauthorized: false }
-      : null,
-      ...(process.env.DATABASE_URL
-        ? { url: process.env.DATABASE_URL }
-        : {
-          database: 'db.sqlite',
+      ...(process.env.NODE_ENV === 'production' ?
+        {
+          type: 'postgres',
+        ...(process.env.DATABASE_URL
+          ? {
+            url: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false }
+          }
+          : {
+            ssl: { rejectUnauthorized: false },
           }),
+          }
+          :{type: 'sqlite', database: 'db.sqlite'}),
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: process.env.NODE_ENV !== 'prod',      
       entities: [Podcast, Episode, CoreEntity, User, CoreOutput, CoreEntity, Review]
@@ -71,10 +76,10 @@ import { Review } from './podcasts/entity/review.entity';
   providers: [AppService],
 })
 export class AppModule {
-  // configure(consumer: MiddlewareConsumer) {
-  //   consumer.apply(JwtMiddleware).forRoutes({
-  //   path: '/graphql',
-  //   method: RequestMethod.POST,
-  //   });
-  // }
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(JwtMiddleware).forRoutes({
+    path: '/graphql',
+    method: RequestMethod.POST,
+    });
+  }
 }
