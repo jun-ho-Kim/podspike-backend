@@ -44,7 +44,7 @@ import { SqlInMemory } from 'typeorm/driver/SqlInMemory';
     AuthModule,
     GraphQLModule.forRoot({
       playground: true,
-      installSubscriptionHandlers: true,
+      introspection: true,
       autoSchemaFile: true ,
       context: ({req}) => {
         return { user: req['user']};
