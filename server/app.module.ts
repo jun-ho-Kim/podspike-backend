@@ -48,14 +48,17 @@ import { Review } from './podcasts/entity/review.entity';
       }
     }),
     TypeOrmModule.forRoot({
-      type: process.env.NODE_ENV ='production' ? 'postgres' : 'sqlite',
+      type:'postgres',
+      ssl: process.env.NODE_ENV === 'production'
+      ? { rejectUnauthorized: false }
+      : null,
       ...(process.env.DATABASE_URL
         ? { url: process.env.DATABASE_URL }
         : {
           database: 'db.sqlite',
           }),
-      logging: true,
-      synchronize: true,
+      synchronize: process.env.NODE_ENV !== 'prod',
+      logging: process.env.NODE_ENV !== 'prod',      
       entities: [Podcast, Episode, CoreEntity, User, CoreOutput, CoreEntity, Review]
     }),
     JwtModule.forRoot({
