@@ -42,6 +42,7 @@ import { Review } from './podcasts/entity/review.entity';
     JwtModule,
     AuthModule,
     GraphQLModule.forRoot({
+      playground: true,
       installSubscriptionHandlers: true,
       autoSchemaFile: true ,
       context: ({req}) => {
