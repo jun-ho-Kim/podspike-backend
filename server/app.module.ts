@@ -1,5 +1,7 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import * as Joi from 'joi';
 import { GraphQLModule } from '@nestjs/graphql';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -18,6 +20,22 @@ import { Review } from './podcasts/entity/review.entity';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: process.env.NODE_ENV === 'dev' ? '.env.dev' : '.env.test',
+      ignoreEnvFile: process.env.NODE_ENV === 'production',
+      validationSchema: Joi.object({
+        NODE_ENV: Joi.string()
+          .valid('dev', 'production', 'test')
+          .required(),
+          DB_HOST: Joi.string(),
+          DB_PORT: Joi.string(),
+          DB_USERNAME: Joi.string(),
+          DB_PASSWORD: Joi.string(),
+          DB_NAME: Joi.string(),
+          PRIVATE_KEY: Joi.string(),          
+      })
+    }),
     PodcastModule,
     UserModule,
     CommonModule,
@@ -30,8 +48,12 @@ import { Review } from './podcasts/entity/review.entity';
       }
     }),
     TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'db.sqlite',
+      type: process.env.NODE_ENV ='production' ? 'postgres' : 'sqlite',
+      ...(process.env.DATABASE_URL
+        ? { url: process.env.DATABASE_URL }
+        : {
+          database: 'db.sqlite',
+          }),
       logging: true,
       synchronize: true,
       entities: [Podcast, Episode, CoreEntity, User, CoreOutput, CoreEntity, Review]
