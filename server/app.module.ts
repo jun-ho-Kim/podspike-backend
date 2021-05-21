@@ -41,14 +41,15 @@ import { Review } from './podcasts/entity/review.entity';
     CommonModule,
     JwtModule,
     AuthModule,
-    GraphQLModule.forRoot({ 
+    GraphQLModule.forRoot({
+      installSubscriptionHandlers: true,
       autoSchemaFile: true ,
       context: ({req}) => {
         return { user: req['user']};
       }
     }),
     TypeOrmModule.forRoot({
-      type:'postgres',
+      type: 'postgres',
       ssl: process.env.NODE_ENV === 'production'
       ? { rejectUnauthorized: false }
       : null,
