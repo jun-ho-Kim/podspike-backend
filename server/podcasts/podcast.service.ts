@@ -47,12 +47,14 @@ export class PodcastService {
         }
     }
         
-    async createPodcast(user, {title, category}: CreatePodcastInput): Promise<CreatePodcastOutput> {
+    async createPodcast(user, {title, category, description, thumbnail}: CreatePodcastInput): Promise<CreatePodcastOutput> {
         try {
             const podcast = await this.podcasts.save(
                 this.podcasts.create({
                     title,
                     category,
+                    description,
+                    thumbnail,
                     rating: 0,
                     user,
                 })
@@ -161,14 +163,15 @@ export class PodcastService {
         };
     };
 
-    async CreateEpisode({id, title, category}: CreateEpisodeInput): Promise<CreateEpisodeOutput> {
-
+    async CreateEpisode({id, title, category, description, episodeImg}: CreateEpisodeInput): Promise<CreateEpisodeOutput> {
         try{
             const {podcast} = await this.getPodcastOne(id);
             const episode = await this.episodes.save(
                 this.episodes.create({
                     title,
                     category,
+                    description,
+                    episodeImg,
                     podcast,
                 })    
             );

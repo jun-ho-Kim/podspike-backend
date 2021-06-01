@@ -7,11 +7,8 @@ import { Episode } from "../entity/episode.entity";
 @InputType()
 export class CreateEpisodeInput extends IntersectionType(
     PodcastSearchInput,
-    PickType(Episode, ['title', 'category'] as const),
-  ) {
-    @Field(type => String, {nullable: true})
-    episodeImg?: string;z
-  }
+    PickType(Episode, ['title', 'category', 'description', 'episodeImg'] as const),
+  ) {}
 
 @ObjectType()
 export class CreateEpisodeOutput extends CoreOutput {

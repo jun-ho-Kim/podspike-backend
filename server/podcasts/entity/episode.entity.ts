@@ -27,9 +27,9 @@ export class Episode extends CoreEntity {
     description: string;
 
     @Column()
-    @Field(type => String)
+    @Field(type => String, {nullable: true})
     @IsString()
-    episodeImg: string;
+    episodeImg?: string;
 
     @ManyToOne(() => Podcast, (podcast) => podcast.episodes)
     @Field(() => Podcast)
