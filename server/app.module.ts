@@ -18,6 +18,7 @@ import { JwtMiddleware } from './jwt/jwt.middleware';
 import { AuthModule } from './auth/auth.module';
 import { Review } from './podcasts/entity/review.entity';
 import { SqlInMemory } from 'typeorm/driver/SqlInMemory';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -34,7 +35,9 @@ import { SqlInMemory } from 'typeorm/driver/SqlInMemory';
           DB_USERNAME: Joi.string(),
           DB_PASSWORD: Joi.string(),
           DB_NAME: Joi.string(),
-          PRIVATE_KEY: Joi.string(),          
+          PRIVATE_KEY: Joi.string(), 
+          AWS_S3_ACCESSKEYID: Joi.string(),
+          AWS_S3_SECRETACCESSKEY: Joi.string().required(),
       })
     }),
     PodcastModule,
@@ -42,6 +45,7 @@ import { SqlInMemory } from 'typeorm/driver/SqlInMemory';
     CommonModule,
     JwtModule,
     AuthModule,
+    UploadsModule,
     GraphQLModule.forRoot({
       playground: true,
       introspection: true,
