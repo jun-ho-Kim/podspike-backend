@@ -7,7 +7,7 @@ import { Podcast } from "../entity/podcast.entity";
 @InputType()
 export class UpdatePodcastInput extends IntersectionType(
     PodcastSearchInput,
-    PartialType(OmitType(Podcast, ['id', 'episodes'])),
+    PartialType(OmitType(Podcast, ['id', 'episodes', 'description', 'thumbnail'])),
   ) {}
 
 @ObjectType()

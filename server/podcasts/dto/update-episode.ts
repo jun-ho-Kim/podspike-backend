@@ -8,7 +8,7 @@ import { EpisodeSearchInput } from "./podcast.dto";
 @InputType()
 export class UpdateEpisodeInput extends IntersectionType(
     EpisodeSearchInput,
-    PartialType(PickType(Episode, ['title', 'category'] as const)),
+    PartialType(PickType(Episode, ['title', 'category', 'description', 'episodeImg'] as const)),
   ) {}
 
 @ObjectType()

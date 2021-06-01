@@ -4,7 +4,7 @@ import { Episode } from "../entity/episode.entity";
 import { Podcast } from "../entity/podcast.entity";
 
 @InputType()
-export class CreatePodcastInput extends PickType(Podcast, ['title', 'category']) {
+export class CreatePodcastInput extends PickType(Podcast, ['title', 'category', 'description', 'thumbnail']) {
 };
 
 @ObjectType()

@@ -21,6 +21,16 @@ export class Episode extends CoreEntity {
     @IsString()
     category: string;
 
+    @Column()
+    @Field(type => String)
+    @IsString()
+    description: string;
+
+    @Column()
+    @Field(type => String)
+    @IsString()
+    episodeImg: string;
+
     @ManyToOne(() => Podcast, (podcast) => podcast.episodes)
     @Field(() => Podcast)
     podcast: Podcast;
