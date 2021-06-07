@@ -47,6 +47,10 @@ import { UploadsModule } from './uploads/uploads.module';
     AuthModule,
     UploadsModule,
     GraphQLModule.forRoot({
+      cors: {
+        origin: 'http://localhost:3000',
+        crdentails: true,
+      },
       playground: true,
       introspection: true,
       autoSchemaFile: true ,
