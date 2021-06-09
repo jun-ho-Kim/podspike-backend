@@ -6,16 +6,16 @@ import { UpdateEpisodeInput, UpdateEpisodeOutput } from "./dto/update-episode";
 import { GetAllPodcastOutput, GetPodcastInput, GetPodcastOutput } from "./dto/get-podcast";
 import { CreateEpisodeInput, CreateEpisodeOutput } from "./dto/create-episode";
 import { CoreOutput } from "../common/output.dto";
-
 import { CreatePodcastInput, CreatePodcastOutput } from "./dto/create-podcast.dto";
 import { GetEpisodeInput, GetEpisodeOutput } from "./dto/get-episode";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Raw, Repository } from "typeorm";
+import { getRepository, Raw, Repository } from "typeorm";
 import { EpisodeSearchInput } from "./dto/podcast.dto";
 import { SearchPodcastInput, SearchPodcastOutput } from "./dto/searchPodcast";
 import { CreateReviewInput, CreateReviewOutput } from "./dto/create-review.dto";
 import { Review } from "./entity/review.entity";
 import { User } from "server/user/entity/user.entity";
+import { CategoriesInput, CategoriesOutput } from "./dto/categories";
 
 @Injectable()
 export class PodcastService {
@@ -135,7 +135,7 @@ export class PodcastService {
                     ok: true,
                     totalResults,
                     podcasts,
-                    totalPages: Math.ceil(totalResults),
+                    totalPage: Math.ceil(totalResults),
                 }
             } catch {
                 return {
@@ -146,7 +146,10 @@ export class PodcastService {
     }
 
     async getAllEpisode({id: podcastId}: GetEpisodeInput): Promise<GetEpisodeOutput> {
-        const {podcast} = await this.getPodcastOne(podcastId)
+        const {podcast} = await this.getPodcastOne(podcastId);
+        if(!podcast) {
+            return {ok: false, error: "팟캐스트를 찾지 못했습니다."}
+        }
         const episodes = await this.episodes.find({
             where: {podcast: {id: podcastId}}
         });
@@ -237,6 +240,31 @@ export class PodcastService {
                 ok: false,
                 error: "Fail Create review"
             }
+        }
+    };
+    async categories({page, category, takeNumber}: CategoriesInput): Promise<CategoriesOutput> {
+        const query = await getRepository(Podcast)
+            .createQueryBuilder("podcast")
+            .where("podcast.category=:category", {category});
+        const totalResults = await query.getCount();
+        const totalPage = Math.ceil(totalResults/10);
+
+        const [podcasts, currentCount] = await query
+            .orderBy("podcast.createdAt", "DESC")
+            .skip((page-1)*10)
+            .take(10)
+            .getManyAndCount()
+        // console.log("query", query);
+        console.log("totalCount", totalResults);
+        console.log("category podcast", podcasts);
+        console.log('totalPage', currentCount);
+        return {
+            ok: true,
+            totalResults,
+            totalPage,
+            currentCount,
+            podcasts,
+            currentPage: page,
         }
     }
 }

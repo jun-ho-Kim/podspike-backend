@@ -18,6 +18,7 @@ import { Review } from "./entity/review.entity";
 import { User } from "server/user/entity/user.entity";
 import { CreateReviewInput, CreateReviewOutput } from "./dto/create-review.dto";
 import { AuthUser } from "server/auth/auth.user";
+import { CategoriesInput, CategoriesOutput } from "./dto/categories";
 
 @Resolver(of => Podcast)
 export class PodcastResolver {
@@ -90,6 +91,12 @@ export class PodcastResolver {
     deleteEpisode(@Args('input') episodeSearchInput: EpisodeSearchInput
    ): Promise<CoreOutput> {
         return this.podcastService.deleteEpisode(episodeSearchInput);
+    };
+
+    @Query(returns => CategoriesOutput)
+    categories(@Args('input') categoriesInput: CategoriesInput
+    ): Promise<CategoriesOutput> {
+        return this.podcastService.categories(categoriesInput)
     }
 }
 

@@ -42,26 +42,25 @@ export class UploadController {
     @Delete()
     async deleteFile(@Body() fileUrl: IBODY) {
         const {url} = fileUrl
+        console.log("fileUrl", fileUrl)
         AWS.config.update({
             credentials: {
                 accessKeyId: process.env.AWS_S3_ACCESSKEYID,
                 secretAccessKey: process.env.AWS_S3_SECRETACCESSKEY,
             }
         });
-        const upload = await new AWS.S3()
-        await upload.deleteObject({
+        await new AWS.S3()
+        .deleteObject({
             Bucket: BUCKET_NAME,
-            Key: url
+            Key: url,
         }, (err, data) => {
             if(err) {
                 console.log("AWS deleteFile error", err)
                 return err;
             };
             console.log("AWS deleteFile Data", data);
-            return {
-                ok: true
-            };
-        }).promise();
+            return data;
+        })
     }
 };
 

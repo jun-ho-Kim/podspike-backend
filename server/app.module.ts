@@ -17,7 +17,6 @@ import { UserModule } from './user/user.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { AuthModule } from './auth/auth.module';
 import { Review } from './podcasts/entity/review.entity';
-import { SqlInMemory } from 'typeorm/driver/SqlInMemory';
 import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
