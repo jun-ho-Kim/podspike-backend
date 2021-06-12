@@ -23,6 +23,16 @@ export class User extends CoreEntity {
     @Column()
     @Field(type => String)
     @IsString()
+    nickName: string;
+
+    @Column()
+    @Field(type => String)
+    @IsString()
+    profilePhoto: string;
+
+    @Column()
+    @Field(type => String)
+    @IsString()
     email: string;
 
     @Column()

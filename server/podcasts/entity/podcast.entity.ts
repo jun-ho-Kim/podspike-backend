@@ -35,6 +35,13 @@ export class Podcast extends CoreEntity {
     @IsString()
     thumbnail?: string;
 
+    // @Field(type => [Podcast])
+    // @OneToMany(
+    //     type => Podcast,
+    //     user => user.subscriber
+    // )
+    // subscriber: User;
+
     @Field(type => [Episode], { nullable: true })
     @OneToMany(() => Episode, (episode) => episode.podcast, {
         cascade: true,

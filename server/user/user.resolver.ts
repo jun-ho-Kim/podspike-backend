@@ -57,7 +57,7 @@ export class UserResolver {
 
     @Role(['Listener'])
     @Query(returns => SubscriptionOutput)
-    subscritions(
+    subscriptions(
         @AuthUser() user: User
     ): SubscriptionOutput {
         return {

@@ -16,6 +16,7 @@ import { CreateReviewInput, CreateReviewOutput } from "./dto/create-review.dto";
 import { Review } from "./entity/review.entity";
 import { User } from "server/user/entity/user.entity";
 import { CategoriesInput, CategoriesOutput } from "./dto/categories";
+import { GetEpisodeDetailInput, GetEpisodeDetailOutput } from "./dto/getPodcastDetail";
 
 @Injectable()
 export class PodcastService {
@@ -49,6 +50,9 @@ export class PodcastService {
         
     async createPodcast(user, {title, category, description, thumbnail}: CreatePodcastInput): Promise<CreatePodcastOutput> {
         try {
+            if(user.role !== "Host") {
+                return {ok: false, error: "방송을 개설할 권한이 없습니다."}
+            }
             const podcast = await this.podcasts.save(
                 this.podcasts.create({
                     title,
@@ -267,4 +271,30 @@ export class PodcastService {
             currentPage: page,
         }
     }
+
+    async getEpisodeDetail({id}: GetEpisodeDetailInput): Promise<GetEpisodeDetailOutput> {
+        const episode = await this.episodes.findOne(id)
+        if(!episode) {
+            return {ok: false, error: "에피소드가 존재하지 않습니다."}
+        }
+        return {
+            ok: true,
+            episode,
+        }
+    }
+
+    // async searchPodcasts( {query, page, takeNumber}:SearchPodcastInput
+    // ):Promise<SearchPodcastOutput> {
+    //     const query1 = await getRepository(Podcast)
+    //         .createQueryBuilder("podcast")
+    //         .where(`podcast.title "ILike": title`, {title: `%${query}%`});
+
+    //     const [podcasts, totalResults] = await query1
+    //         .orderBy("DESC")
+    //         .take(10)
+    //         .getManyAndCount();
+    //     return {
+    //         ok: true
+    //     }
+    // }
 }

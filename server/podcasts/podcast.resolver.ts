@@ -19,6 +19,7 @@ import { User } from "server/user/entity/user.entity";
 import { CreateReviewInput, CreateReviewOutput } from "./dto/create-review.dto";
 import { AuthUser } from "server/auth/auth.user";
 import { CategoriesInput, CategoriesOutput } from "./dto/categories";
+import { GetEpisodeDetailInput, GetEpisodeDetailOutput } from "./dto/getPodcastDetail";
 
 @Resolver(of => Podcast)
 export class PodcastResolver {
@@ -98,6 +99,18 @@ export class PodcastResolver {
     ): Promise<CategoriesOutput> {
         return this.podcastService.categories(categoriesInput)
     }
+
+    @Query(returns => GetEpisodeDetailOutput)
+    getEpisodeDetail(@Args('input') getEpisodeDetailInput: GetEpisodeDetailInput
+    ): Promise<GetEpisodeDetailOutput> {
+        return this.podcastService.getEpisodeDetail(getEpisodeDetailInput)
+    }
+
+    // @Query(returns => SearchPodcastOutput)
+    // searchpodcast(@Args('input') searchPodcastInput: SearchPodcastInput
+    // ): Promise<SearchPodcastOutput> {
+    //     return this.podcastService.searchPodcast(searchPodcastInput)
+    // }
 }
 
 @Resolver(of => Review) 

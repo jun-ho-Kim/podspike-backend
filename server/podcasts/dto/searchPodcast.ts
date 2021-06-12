@@ -6,6 +6,8 @@ import { Podcast } from "../entity/podcast.entity";
 export class SearchPodcastInput extends PaginationInput {
     @Field(type => String)
     query: string;
+    @Field(type => Number, {defaultValue: 3})
+    takeNumber: number;
 }
 
 @ObjectType()

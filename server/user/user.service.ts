@@ -1,5 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { Args } from "@nestjs/graphql";
 import { InjectRepository } from "@nestjs/typeorm";
 import { JwtService } from "server/jwt/jwt.service";
 import { Episode } from "server/podcasts/entity/episode.entity";
@@ -11,7 +10,6 @@ import { LoginInput, LoginOutput } from "./dto/login.dto";
 import { PlayedEpisodedInput, PlayedEpisodedOutput } from "./dto/markEpisodeAsPlayed";
 import { SeeProfileOutput } from "./dto/seeProfile.dto";
 import { SubscribeInput, SubscribeOutput } from "./dto/subscribe";
-import { SubscriptionOutput } from "./dto/subscriptions";
 import { User } from "./entity/user.entity";
 
 @Injectable()
@@ -102,7 +100,7 @@ export class UserService {
             }
         }
     };
-    async editProfile(userId, { email, password}: EditProfileInput
+    async editProfile(userId, { email, password, role}: EditProfileInput
     ): Promise<EditProfileOutput> {
         try {
             const user = await this.users.findOne(userId);
@@ -111,6 +109,9 @@ export class UserService {
             };
             if(password) {
                 user.password = password;
+            };
+            if(role) {
+                user.role = role;
             };
             await this.users.save(user);
             return {
@@ -144,7 +145,7 @@ export class UserService {
         } catch {
             return {ok: false, error: "Fail subscription "}
         }
-    }
+    };
 
     async playedLists(
         user: User,
