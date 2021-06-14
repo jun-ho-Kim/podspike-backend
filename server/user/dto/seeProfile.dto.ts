@@ -4,7 +4,7 @@ import { Column } from "typeorm";
 import { User } from "../entity/user.entity";
 
 @InputType()
-export class SeeProfileInput extends PickType(User, ['id', 'email']) {}
+export class SeeProfileInput extends PickType(User, ['id', 'email', 'nickName', 'profilePhoto', 'role',]) {}
 
 @ObjectType()
 export class SeeProfileOutput extends CoreOutput {

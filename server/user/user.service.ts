@@ -24,7 +24,7 @@ export class UserService {
         private readonly jwtService: JwtService,
     ) {}
 
-    async createAccount({email, password, passwordConfirm, role}: CreateAccountInput
+    async createAccount({email, password, passwordConfirm, role, nickName, profilePhoto}: CreateAccountInput
         ): Promise<CreateAccountOutput> {
             const exist = await this.users.findOne({email});
             if(exist) {
@@ -38,7 +38,9 @@ export class UserService {
                     email,
                     password,
                     passwordConfirm,
-                    role
+                    role,
+                    nickName,
+                    profilePhoto,
                 })
                 await this.users.save(user)
                 return {
@@ -73,9 +75,10 @@ export class UserService {
                 ok: true,
                 token,
             }
-        } catch {
+        } catch(error) {
             return {
                 ok: false,
+                error, 
             }
         }
     };
@@ -135,15 +138,15 @@ export class UserService {
             }
             if(user.subscriptions.some((sub) => sub.id === podcast.id)) {
                 user.subscriptions = user.subscriptions.filter((sub) => sub.id !== podcast.id)
+                return {ok: true} 
             } else {
                 user.subscriptions = [...user.subscriptions, podcast];
-            }
-            await this.users.save(user);
-            return {
-                ok: true,
+                return {ok: true} 
             }
         } catch {
             return {ok: false, error: "Fail subscription "}
+        } finally {
+            await this.users.save(user);
         }
     };
 

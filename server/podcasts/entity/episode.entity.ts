@@ -31,7 +31,7 @@ export class Episode extends CoreEntity {
     @IsString()
     episodeImg?: string;
 
-    @ManyToOne(() => Podcast, (podcast) => podcast.episodes)
+    @ManyToOne(() => Podcast, (podcast) => podcast.episodes, {eager: true})
     @Field(() => Podcast)
     podcast: Podcast;
 

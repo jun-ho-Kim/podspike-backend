@@ -62,7 +62,8 @@ export class UserResolver {
     ): SubscriptionOutput {
         return {
             ok: true,
-            subscriptions: [...user.subscriptions]
+            subscriptions: [...user.subscriptions],
+            subscriptionCount: user.subscriptions.length
         }
     }
 

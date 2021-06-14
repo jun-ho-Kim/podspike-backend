@@ -6,4 +6,6 @@ import { Podcast } from "server/podcasts/entity/podcast.entity";
 export class SubscriptionOutput extends CoreOutput {
     @Field(type => [Podcast], {nullable: true})
     subscriptions?: Podcast[];
+    @Field(type => Number, {nullable: true})
+    subscriptionCount?: number;
 }
