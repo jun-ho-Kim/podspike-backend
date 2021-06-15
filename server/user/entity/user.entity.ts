@@ -53,7 +53,7 @@ export class User extends CoreEntity {
     @Field(type => [Podcast])
     @OneToMany(
         type => Podcast,
-        podcast => podcast.user,
+        podcast => podcast.host,
         
     )
     podcasts: Podcast[];

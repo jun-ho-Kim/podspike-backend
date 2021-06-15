@@ -20,6 +20,7 @@ import { CreateReviewInput, CreateReviewOutput } from "./dto/create-review.dto";
 import { AuthUser } from "server/auth/auth.user";
 import { CategoriesInput, CategoriesOutput } from "./dto/categories";
 import { GetEpisodeDetailInput, GetEpisodeDetailOutput } from "./dto/getPodcastDetail";
+import { MyPodcastsOutput } from "server/user/dto/myPodcasts.dto";
 
 @Resolver(of => Podcast)
 export class PodcastResolver {
@@ -34,10 +35,10 @@ export class PodcastResolver {
     @Role(["Host"])
     @Mutation(returns => CreatePodcastOutput)
     createPodcast(
-        @AuthUser() user: User,
+        @AuthUser() host: User,
         @Args('input') createPodcastInput: CreatePodcastInput
     ): Promise<CreatePodcastOutput> {
-        return this.podcastService.createPodcast(user, createPodcastInput);
+        return this.podcastService.createPodcast(host, createPodcastInput);
     };
 
     @Query(returns => GetPodcastOutput)
@@ -111,6 +112,13 @@ export class PodcastResolver {
     // ): Promise<SearchPodcastOutput> {
     //     return this.podcastService.searchPodcast(searchPodcastInput)
     // }
+    @Role(['Host'])
+    @Query(returns => MyPodcastsOutput)
+    myPodcasts(
+        @AuthUser() host: User
+    ): Promise<MyPodcastsOutput> {
+        return this.podcastService.myPodcasts(host);
+    }
 }
 
 @Resolver(of => Review) 

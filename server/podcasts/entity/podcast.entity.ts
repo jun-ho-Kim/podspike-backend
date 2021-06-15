@@ -54,9 +54,9 @@ export class Podcast extends CoreEntity {
         user => user.podcasts,
         // { eager: true }
         )
-        user: User;
-    @RelationId((podcast: Podcast) => podcast.user)
-    userId: number;
+        host: User;
+    @RelationId((podcast: Podcast) => podcast.host)
+    hostId: number;
 
     @Field(type => [Review], {nullable: true})
     @OneToMany(

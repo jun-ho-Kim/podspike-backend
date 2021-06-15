@@ -17,6 +17,7 @@ import { Review } from "./entity/review.entity";
 import { User } from "server/user/entity/user.entity";
 import { CategoriesInput, CategoriesOutput } from "./dto/categories";
 import { GetEpisodeDetailInput, GetEpisodeDetailOutput } from "./dto/getPodcastDetail";
+import { MyPodcastsOutput } from "server/user/dto/myPodcasts.dto";
 
 @Injectable()
 export class PodcastService {
@@ -48,9 +49,9 @@ export class PodcastService {
         }
     }
         
-    async createPodcast(user, {title, category, description, thumbnail}: CreatePodcastInput): Promise<CreatePodcastOutput> {
+    async createPodcast(host: User, {title, category, description, thumbnail}: CreatePodcastInput): Promise<CreatePodcastOutput> {
         try {
-            if(user.role !== "Host") {
+            if(host.role !== "Host") {
                 return {ok: false, error: "방송을 개설할 권한이 없습니다."}
             }
             const podcast = await this.podcasts.save(
@@ -60,7 +61,7 @@ export class PodcastService {
                     description,
                     thumbnail,
                     rating: 0,
-                    user,
+                    host,
                 })
             );
             return {
@@ -280,6 +281,19 @@ export class PodcastService {
         return {
             ok: true,
             episode,
+        }
+    };
+    async myPodcasts(
+        host: User
+    ): Promise<MyPodcastsOutput> {
+        try {
+            const myPodcasts = await this.podcasts.find({host});
+            return {
+                ok: true,
+                myPodcasts,
+            }
+        } catch(error) {
+            console.log(error);
         }
     }
 

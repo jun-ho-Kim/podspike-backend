@@ -8,6 +8,7 @@ import { CreateAccountInput, CreateAccountOutput } from "./dto/create-account.dt
 import { EditProfileInput, EditProfileOutput } from "./dto/editProfile.dto";
 import { LoginInput, LoginOutput } from "./dto/login.dto";
 import { PlayedEpisodedInput, PlayedEpisodedOutput } from "./dto/markEpisodeAsPlayed";
+import { MyPodcastsInput, MyPodcastsOutput } from "./dto/myPodcasts.dto";
 import { SeeProfileInput, SeeProfileOutput } from "./dto/seeProfile.dto";
 import { SubscribeInput, SubscribeOutput } from "./dto/subscribe";
 import { SubscriptionOutput } from "./dto/subscriptions";
