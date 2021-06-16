@@ -10,7 +10,9 @@ export class CreateEpisodeInput extends IntersectionType(
     PickType(Episode, ['title', 'description'] as const),
   ) {
     @Field(type => String, {nullable: true})
-    episodeImg?: string
+    episodeImg?: string;
+    @Field(type => String, {nullable: true})
+    audioUrl?: string
   }
 
 @ObjectType()

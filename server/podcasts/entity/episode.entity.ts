@@ -30,6 +30,11 @@ export class Episode extends CoreEntity {
     @Field(() => Podcast)
     podcast: Podcast;
 
+    @Column()
+    @Field(type => String, {nullable: true})
+    @IsString()
+    audioUrl: string;
+
     @Field(type => User)
     @ManyToOne(
         type => User,

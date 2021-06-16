@@ -171,7 +171,7 @@ export class PodcastService {
         };
     };
 
-    async CreateEpisode({id, title, description, episodeImg}: CreateEpisodeInput): Promise<CreateEpisodeOutput> {
+    async CreateEpisode({id, title, description, episodeImg, audioUrl}: CreateEpisodeInput): Promise<CreateEpisodeOutput> {
         try{
             if(episodeImg === undefined) {
                 episodeImg = "";
@@ -183,6 +183,7 @@ export class PodcastService {
                     description,
                     episodeImg,
                     podcast,
+                    audioUrl,
                 })    
             );
             return {
