@@ -33,7 +33,7 @@ export class PodcastService {
 
     async getAllPodcast(): Promise<GetAllPodcastOutput>{
         const podcast = await this.podcasts.find({
-            relations: ['episodes']
+            relations: ['episodes', 'host']
         }
         );
         if(!podcast) {
@@ -171,13 +171,15 @@ export class PodcastService {
         };
     };
 
-    async CreateEpisode({id, title, category, description, episodeImg}: CreateEpisodeInput): Promise<CreateEpisodeOutput> {
+    async CreateEpisode({id, title, description, episodeImg}: CreateEpisodeInput): Promise<CreateEpisodeOutput> {
         try{
+            if(episodeImg === undefined) {
+                episodeImg = "";
+            }
             const {podcast} = await this.getPodcastOne(id);
             const episode = await this.episodes.save(
                 this.episodes.create({
                     title,
-                    category,
                     description,
                     episodeImg,
                     podcast,

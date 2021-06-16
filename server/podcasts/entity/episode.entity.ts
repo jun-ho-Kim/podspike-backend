@@ -19,11 +19,6 @@ export class Episode extends CoreEntity {
     @Column()
     @Field(type => String)
     @IsString()
-    category: string;
-
-    @Column()
-    @Field(type => String)
-    @IsString()
     description: string;
 
     @Column()
