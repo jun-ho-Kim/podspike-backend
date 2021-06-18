@@ -21,7 +21,6 @@ import { AuthUser } from "server/auth/auth.user";
 import { CategoriesInput, CategoriesOutput } from "./dto/categories";
 import { GetEpisodeDetailInput, GetEpisodeDetailOutput } from "./dto/getPodcastDetail";
 import { MyPodcastsOutput } from "server/user/dto/myPodcasts.dto";
-import { SubscriberNumberInput, SubscriberNumberOutput } from "./dto/seenUser";
 
 @Resolver(of => Podcast)
 export class PodcastResolver {
@@ -69,12 +68,6 @@ export class PodcastResolver {
         return this.podcastService.searchPodcast(searchPodcastInput)
     }
 
-    @Role(['Host'])
-    @Query(returns => SubscriberNumberOutput)
-    subscriberNumber(
-        @Args('input') subscriberNumberInput: SubscriberNumberInput) {
-        return this.podcastService.subscriberNumber( subscriberNumberInput)
-    }
 
 
     @Query(returns => GetEpisodeOutput)

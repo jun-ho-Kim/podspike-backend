@@ -8,6 +8,7 @@ import { CreateAccountInput, CreateAccountOutput } from "./dto/create-account.dt
 import { EditProfileInput, EditProfileOutput } from "./dto/editProfile.dto";
 import { LoginInput, LoginOutput } from "./dto/login.dto";
 import { PlayedEpisodedInput, PlayedEpisodedOutput } from "./dto/markEpisodeAsPlayed";
+import { SawEpisodesInput, SawEpisodesOutput } from "./dto/sawEpisode";
 import { SeeProfileInput, SeeProfileOutput } from "./dto/seeProfile.dto";
 import { SubscribeInput, SubscribeOutput } from "./dto/subscribe";
 import { SubscriptionOutput } from "./dto/subscriptions";
@@ -60,6 +61,7 @@ export class UserResolver {
     subscriptions(
         @AuthUser() user: User
     ): SubscriptionOutput {
+
         return {
             ok: true,
             subscriptions: [...user.subscriptions],
@@ -74,6 +76,15 @@ export class UserResolver {
         @Args('input') subscribeInput: SubscribeInput
     ): Promise<SubscribeOutput> {
         return this.userService.subscribe(user, subscribeInput);
+    };
+
+    @Role(['Listener'])
+    @Mutation(returns => SawEpisodesOutput)
+    sawEpisodes(
+        @AuthUser() user: User,
+        @Args('input') episodeId: SawEpisodesInput
+    ) : Promise<SawEpisodesOutput> {
+        return this.userService.sawEpisodes(user, episodeId);
     }
 
     @Role(['Listener'])

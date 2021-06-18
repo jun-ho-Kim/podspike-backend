@@ -35,14 +35,14 @@ export class Podcast extends CoreEntity {
     @IsString()
     thumbnail?: string;
 
-    @Field(type => [User])
+    @Field(type => [User], {nullable: true})
     @ManyToMany(
         type => User,
         user => user.subscriptions,
         // {eager: true}
     )
     @JoinTable()
-    subscriber: User;
+    subscriber?: User;
 
     @Field(type => [Episode], { nullable: true })
     @OneToMany(() => Episode, (episode) => episode.podcast, {

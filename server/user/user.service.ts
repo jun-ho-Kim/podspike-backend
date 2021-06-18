@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { JwtService } from "server/jwt/jwt.service";
+import { GetEpisodeDetailOutput } from "server/podcasts/dto/getPodcastDetail";
 import { Episode } from "server/podcasts/entity/episode.entity";
 import { Podcast } from "server/podcasts/entity/podcast.entity";
 import { Repository } from "typeorm";
@@ -9,8 +10,10 @@ import { EditProfileInput, EditProfileOutput } from "./dto/editProfile.dto";
 import { LoginInput, LoginOutput } from "./dto/login.dto";
 import { PlayedEpisodedInput, PlayedEpisodedOutput } from "./dto/markEpisodeAsPlayed";
 import { MyPodcastsOutput } from "./dto/myPodcasts.dto";
+import { SawEpisodesInput, SawEpisodesOutput } from "./dto/sawEpisode";
 import { SeeProfileOutput } from "./dto/seeProfile.dto";
 import { SubscribeInput, SubscribeOutput } from "./dto/subscribe";
+import { SubscriptionOutput } from "./dto/subscriptions";
 import { User } from "./entity/user.entity";
 
 @Injectable()
@@ -141,7 +144,7 @@ export class UserService {
         user,{podcastId}: SubscribeInput
     ): Promise<SubscribeOutput> {
         try {
-            const podcast = await this.podcasts.findOne({id: podcastId});
+            const podcast = await this.podcasts.findOne(podcastId, {relations: ['subscriber']});
             if(!podcast) {
                 return { ok: false, error: "Podcast not found"}
             }
@@ -158,6 +161,44 @@ export class UserService {
             await this.users.save(user);
         }
     };
+
+    async subscriptions(user: User): Promise<SubscriptionOutput> {
+        try {
+            const subscriptions = [...user.subscriptions];
+            // const {subscriber}  = await this.podcasts.findAndCount(user.id, {relations: ['subscriber']})
+            // const subscriber  = await this.podcasts.findAndCount({where: {subscriber: user}})
+            // const subscriptionss  = await this.podcasts.createQueryBuilder('podcast').leftJoinAndSelect('podcast.subscriber', 'subscriber').where('podcast.subscriber=:subscriber.id', {user}).getCount()
+            // const subscriptionPod = [subscriber]
+            console.log("subscriptions", subscriptions)
+            // console.log("subscriptionspod", subscriptionPod)
+            return {
+                ok: true,
+                subscriptions,
+                subscriptionCount: subscriptions.length,
+            }
+        } catch {
+
+        }
+    };
+
+    async sawEpisodes(
+        user: User,
+        episodeId: SawEpisodesInput
+    ): Promise<SawEpisodesOutput> {
+        try {
+            const sawEpisode = await this.episodes.findOne(episodeId);
+            user.sawEpisode = [...user.sawEpisode, sawEpisode];
+            await this.users.save(user);
+            return {
+                ok: true,
+                sawEpisodes: user.sawEpisode,
+                isSawEpsidoe: true
+            }
+            
+        } catch {
+            
+        }
+    }
 
     async playedLists(
         user: User,

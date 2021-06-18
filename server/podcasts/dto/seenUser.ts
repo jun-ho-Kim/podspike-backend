@@ -4,10 +4,10 @@ import { User } from "server/user/entity/user.entity";
 import { Podcast } from "../entity/podcast.entity";
 
 @InputType()
-export class SubscriberNumberInput extends PickType(Podcast, ['id']) {}
+export class SeenEpisodeUserInput extends PickType(User, ['id']) {}
 
 @ObjectType()
-export class SubscriberNumberOutput extends CoreOutput {
+export class SeenEpisodeUserOutput extends CoreOutput {
     @Field(type => Number, {nullable: true})
     subscriptionCount?: number
 }

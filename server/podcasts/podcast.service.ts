@@ -19,7 +19,6 @@ import { CategoriesInput, CategoriesOutput } from "./dto/categories";
 import { GetEpisodeDetailInput, GetEpisodeDetailOutput } from "./dto/getPodcastDetail";
 import { MyPodcastsOutput } from "server/user/dto/myPodcasts.dto";
 import { SubscriptionOutput } from "../user/dto/subscriptions";
-import { SubscriberNumberInput, SubscriberNumberOutput } from "./dto/seenUser";
 
 @Injectable()
 export class PodcastService {
@@ -80,7 +79,7 @@ export class PodcastService {
 
     async getPodcastOne(id: number): Promise<GetPodcastOutput> {
         const podcast = await this.podcasts.findOne(id, {
-            relations: ['episodes']
+            relations: ['episodes', 'subscriber']
         });
         if(!podcast) {
             return {
@@ -151,22 +150,7 @@ export class PodcastService {
                 }
             }
     };
-    async subscriberNumber({id: podcastId}: SubscriberNumberInput
-    ): Promise<SubscriberNumberOutput> {
-        try {
-            const query = await this.podcasts.findOne(podcastId, {
-                relations: ['subscriber']
-            })
-            // const [subscriber, subscriberNumbe] = await query. 
-            console.log('subscriberNumber', query)
-            return {
-                ok: true,
-                subscriptionCount: 2,
-            }
-        } catch {
 
-        }
-    }
 
     async getAllEpisode({id: podcastId}: GetEpisodeInput): Promise<GetEpisodeOutput> {
         const {podcast} = await this.getPodcastOne(podcastId);
