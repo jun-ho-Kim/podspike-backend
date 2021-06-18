@@ -12,7 +12,9 @@ export class CreateEpisodeInput extends IntersectionType(
     @Field(type => String, {nullable: true})
     episodeImg?: string;
     @Field(type => String, {nullable: true})
-    audioUrl?: string
+    audioUrl?: string;
+    @Field(type => Number, {nullable: true})
+    audioLength?: number;
   }
 
 @ObjectType()

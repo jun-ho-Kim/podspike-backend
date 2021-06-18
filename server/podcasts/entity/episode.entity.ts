@@ -36,9 +36,9 @@ export class Episode extends CoreEntity {
     audioUrl: string;
 
     @Column()
-    @Field(type => String, {nullable: true})
+    @Field(type => Number, {nullable: true})
     @IsString()
-    audioLength: string;
+    audioLength?: number;
 
     @Field(type => User)
     @ManyToOne(

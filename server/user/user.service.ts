@@ -183,7 +183,7 @@ export class UserService {
 
     async sawEpisodes(
         user: User,
-        episodeId: SawEpisodesInput
+        {id: episodeId}: SawEpisodesInput
     ): Promise<SawEpisodesOutput> {
         try {
             const sawEpisode = await this.episodes.findOne(episodeId);
@@ -192,9 +192,8 @@ export class UserService {
             return {
                 ok: true,
                 sawEpisodes: user.sawEpisode,
-                isSawEpsidoe: true
+                isSawEpisode: true
             }
-            
         } catch {
             
         }

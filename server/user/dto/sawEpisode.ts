@@ -10,7 +10,7 @@ export class SawEpisodesInput extends PickType(Episode, ['id']) {}
 export class SawEpisodesOutput extends CoreOutput {
     @Field(type => [Episode], {nullable: true})
     sawEpisodes?: Episode[];
-    
+
     @Field(type => Boolean, {nullable: true})
-    isSawEpsidoe?: boolean;
+    isSawEpisode?: boolean;
 }

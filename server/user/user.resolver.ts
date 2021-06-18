@@ -82,9 +82,9 @@ export class UserResolver {
     @Mutation(returns => SawEpisodesOutput)
     sawEpisodes(
         @AuthUser() user: User,
-        @Args('input') episodeId: SawEpisodesInput
+        @Args('input') sawEpisodeInput: SawEpisodesInput
     ) : Promise<SawEpisodesOutput> {
-        return this.userService.sawEpisodes(user, episodeId);
+        return this.userService.sawEpisodes(user, sawEpisodeInput);
     }
 
     @Role(['Listener'])
