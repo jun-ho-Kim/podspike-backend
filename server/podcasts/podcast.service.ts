@@ -9,7 +9,7 @@ import { CoreOutput } from "../common/output.dto";
 import { CreatePodcastInput, CreatePodcastOutput } from "./dto/create-podcast.dto";
 import { GetEpisodeInput, GetEpisodeOutput } from "./dto/get-episode";
 import { InjectRepository } from "@nestjs/typeorm";
-import { getRepository, Raw, Repository } from "typeorm";
+import { getRepository, In, Raw, Repository } from "typeorm";
 import { EpisodeSearchInput } from "./dto/podcast.dto";
 import { SearchPodcastInput, SearchPodcastOutput } from "./dto/searchPodcast";
 import { CreateReviewInput, CreateReviewOutput } from "./dto/create-review.dto";
@@ -18,6 +18,8 @@ import { User } from "server/user/entity/user.entity";
 import { CategoriesInput, CategoriesOutput } from "./dto/categories";
 import { GetEpisodeDetailInput, GetEpisodeDetailOutput } from "./dto/getPodcastDetail";
 import { MyPodcastsOutput } from "server/user/dto/myPodcasts.dto";
+import { SubscriptionOutput } from "../user/dto/subscriptions";
+import { SubscriberNumberInput, SubscriberNumberOutput } from "./dto/seenUser";
 
 @Injectable()
 export class PodcastService {
@@ -33,7 +35,7 @@ export class PodcastService {
 
     async getAllPodcast(): Promise<GetAllPodcastOutput>{
         const podcast = await this.podcasts.find({
-            relations: ['episodes', 'host']
+            relations: ['episodes', 'host', 'subscriber']
         }
         );
         if(!podcast) {
@@ -148,6 +150,22 @@ export class PodcastService {
                     error: "Could not search Podcasts",
                 }
             }
+    };
+    async subscriberNumber({id: podcastId}: SubscriberNumberInput
+    ): Promise<SubscriberNumberOutput> {
+        try {
+            const query = await this.podcasts.findOne(podcastId, {
+                relations: ['subscriber']
+            })
+            // const [subscriber, subscriberNumbe] = await query. 
+            console.log('subscriberNumber', query)
+            return {
+                ok: true,
+                subscriptionCount: 2,
+            }
+        } catch {
+
+        }
     }
 
     async getAllEpisode({id: podcastId}: GetEpisodeInput): Promise<GetEpisodeOutput> {
@@ -253,10 +271,10 @@ export class PodcastService {
     async categories({page, category, takeNumber}: CategoriesInput): Promise<CategoriesOutput> {
         const query = await getRepository(Podcast)
             .createQueryBuilder("podcast")
+            .leftJoinAndSelect('podcast.subscriber', 'subscriber')
             .where("podcast.category=:category", {category});
         const totalResults = await query.getCount();
         const totalPage = Math.ceil(totalResults/10);
-
         const [podcasts, currentCount] = await query
             .orderBy("podcast.createdAt", "DESC")
             .skip((page-1)*10)
@@ -266,6 +284,8 @@ export class PodcastService {
         console.log("totalCount", totalResults);
         console.log("category podcast", podcasts);
         console.log('totalPage', currentCount);
+        // console.log('category subscriber', query.where({subscriber: ""}).getManyAndCount());
+
         return {
             ok: true,
             totalResults,
@@ -298,7 +318,8 @@ export class PodcastService {
         } catch(error) {
             console.log(error);
         }
-    }
+    };
+    
 
     // async searchPodcasts( {query, page, takeNumber}:SearchPodcastInput
     // ):Promise<SearchPodcastOutput> {

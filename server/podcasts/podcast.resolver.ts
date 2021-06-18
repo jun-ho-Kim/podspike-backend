@@ -21,6 +21,7 @@ import { AuthUser } from "server/auth/auth.user";
 import { CategoriesInput, CategoriesOutput } from "./dto/categories";
 import { GetEpisodeDetailInput, GetEpisodeDetailOutput } from "./dto/getPodcastDetail";
 import { MyPodcastsOutput } from "server/user/dto/myPodcasts.dto";
+import { SubscriberNumberInput, SubscriberNumberOutput } from "./dto/seenUser";
 
 @Resolver(of => Podcast)
 export class PodcastResolver {
@@ -67,6 +68,14 @@ export class PodcastResolver {
     ): Promise<SearchPodcastOutput> {
         return this.podcastService.searchPodcast(searchPodcastInput)
     }
+
+    @Role(['Host'])
+    @Query(returns => SubscriberNumberOutput)
+    subscriberNumber(
+        @Args('input') subscriberNumberInput: SubscriberNumberInput) {
+        return this.podcastService.subscriberNumber( subscriberNumberInput)
+    }
+
 
     @Query(returns => GetEpisodeOutput)
     getAllEpisode(@Args('input') getEpisodeInput: GetEpisodeInput
@@ -118,7 +127,14 @@ export class PodcastResolver {
         @AuthUser() host: User
     ): Promise<MyPodcastsOutput> {
         return this.podcastService.myPodcasts(host);
-    }
+    };
+
+    // @Role(['Host'])
+    // @Query(returns => [User])
+    // subscriberLenth(
+
+    // ): Promise<>
+
 }
 
 @Resolver(of => Review) 

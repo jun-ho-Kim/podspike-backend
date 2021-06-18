@@ -60,7 +60,8 @@ export class User extends CoreEntity {
 
     @Field(type => [Podcast])
     @ManyToMany(
-        type => Podcast, 
+        type => Podcast,
+        podcast => podcast.subscriber,
         {eager: true}
     )
     @JoinTable()
@@ -79,7 +80,14 @@ export class User extends CoreEntity {
         type => Episode,
         playedList => playedList.player
     )
-    playedLists: Episode[]
+    playedLists: Episode[];
+
+    @Field(type => [Episode], {nullable: true})
+    @ManyToMany(
+        type => Episode,
+        episode => episode.seenUser,
+    )
+    sawEpisode: Episode[];
 
     @BeforeInsert()
     @BeforeUpdate()

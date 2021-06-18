@@ -1,6 +1,6 @@
 import { Episode } from "./episode.entity";
 import { Field, InputType, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, ManyToOne, OneToMany, RelationId } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId } from "typeorm";
 import { IsNumber, IsString } from "class-validator";
 import { CoreEntity } from "../../common/entities/coreEntity";
 import { User } from "server/user/entity/user.entity";
@@ -35,12 +35,14 @@ export class Podcast extends CoreEntity {
     @IsString()
     thumbnail?: string;
 
-    // @Field(type => [Podcast])
-    // @OneToMany(
-    //     type => Podcast,
-    //     user => user.subscriber
-    // )
-    // subscriber: User;
+    @Field(type => [User])
+    @ManyToMany(
+        type => User,
+        user => user.subscriptions,
+        // {eager: true}
+    )
+    @JoinTable()
+    subscriber: User;
 
     @Field(type => [Episode], { nullable: true })
     @OneToMany(() => Episode, (episode) => episode.podcast, {
