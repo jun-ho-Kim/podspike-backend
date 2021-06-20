@@ -86,7 +86,9 @@ export class User extends CoreEntity {
     @ManyToMany(
         type => Episode,
         episode => episode.seenUser,
+        {eager: true}
     )
+    @JoinTable()
     sawEpisode: Episode[];
 
     @BeforeInsert()

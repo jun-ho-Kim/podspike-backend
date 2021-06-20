@@ -61,7 +61,6 @@ export class UserResolver {
     subscriptions(
         @AuthUser() user: User
     ): SubscriptionOutput {
-
         return {
             ok: true,
             subscriptions: [...user.subscriptions],

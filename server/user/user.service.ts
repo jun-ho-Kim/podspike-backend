@@ -188,7 +188,10 @@ export class UserService {
         try {
             const sawEpisode = await this.episodes.findOne(episodeId);
             user.sawEpisode = [...user.sawEpisode, sawEpisode];
+            let count = user.sawEpisode.length;
+            sawEpisode.seenNum = count;
             await this.users.save(user);
+            await this.episodes.save(sawEpisode);
             return {
                 ok: true,
                 sawEpisodes: user.sawEpisode,

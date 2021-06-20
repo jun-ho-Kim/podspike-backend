@@ -21,6 +21,7 @@ import { AuthUser } from "server/auth/auth.user";
 import { CategoriesInput, CategoriesOutput } from "./dto/categories";
 import { GetEpisodeDetailInput, GetEpisodeDetailOutput } from "./dto/getPodcastDetail";
 import { MyPodcastsOutput } from "server/user/dto/myPodcasts.dto";
+import { PopularEpisodesOutput } from "./dto/popular-episode";
 
 @Resolver(of => Podcast)
 export class PodcastResolver {
@@ -122,11 +123,20 @@ export class PodcastResolver {
         return this.podcastService.myPodcasts(host);
     };
 
-    // @Role(['Host'])
-    // @Query(returns => [User])
-    // subscriberLenth(
+    // @Role(['Listener'])
+    // @Query(returns => PopularEpisodesOutput)
+    // seenUserCounts(
+    // ): Promise<PopularEpisodesOutput> {
+    //     return this.podcastService.popularEpisode();
+    // };
 
-    // ): Promise<>
+    @Role(['Listener'])
+    @Query(returns => PopularEpisodesOutput)
+    popularEpisodes(
+    ): Promise<PopularEpisodesOutput> {
+        return this.podcastService.popularEpisode();
+    };
+
 
 }
 

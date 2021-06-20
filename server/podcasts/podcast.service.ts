@@ -19,6 +19,7 @@ import { CategoriesInput, CategoriesOutput } from "./dto/categories";
 import { GetEpisodeDetailInput, GetEpisodeDetailOutput } from "./dto/getPodcastDetail";
 import { MyPodcastsOutput } from "server/user/dto/myPodcasts.dto";
 import { SubscriptionOutput } from "../user/dto/subscriptions";
+import { PopularEpisodesOutput } from "./dto/popular-episode";
 
 @Injectable()
 export class PodcastService {
@@ -158,6 +159,7 @@ export class PodcastService {
             return {ok: false, error: "팟캐스트를 찾지 못했습니다."}
         }
         const episodes = await this.episodes.find({
+            relations: ['seenUser'],
             where: {podcast: {id: podcastId}}
         });
         console.log("getAllEpisode", episodes)
@@ -173,20 +175,20 @@ export class PodcastService {
         };
     };
 
-    async CreateEpisode({id, title, description, episodeImg, audioUrl, audioLength}: CreateEpisodeInput): Promise<CreateEpisodeOutput> {
+    async CreateEpisode({id, title, description, seenNum, audioUrl, audioLength}: CreateEpisodeInput): Promise<CreateEpisodeOutput> {
         try{
-            if(episodeImg === undefined) {
-                episodeImg = "";
-            }
+            // if(episodeImg === undefined) {
+            //     episodeImg = "";
+            // }
             const {podcast} = await this.getPodcastOne(id);
             const episode = await this.episodes.save(
                 this.episodes.create({
                     title,
                     description,
-                    episodeImg,
                     podcast,
                     audioUrl,
-                    audioLength
+                    audioLength,
+                    seenNum,
                 })    
             );
             return {
@@ -282,7 +284,9 @@ export class PodcastService {
     }
 
     async getEpisodeDetail({id}: GetEpisodeDetailInput): Promise<GetEpisodeDetailOutput> {
-        const episode = await this.episodes.findOne(id)
+        const episode = await this.episodes.findOne(id, 
+            {relations: ['seenUser']
+        })
         if(!episode) {
             return {ok: false, error: "에피소드가 존재하지 않습니다."}
         }
@@ -304,6 +308,24 @@ export class PodcastService {
             console.log(error);
         }
     };
+
+    async popularEpisode(): Promise<PopularEpisodesOutput> {
+        try {
+            const popularEpisodes  = await this.episodes.find(
+                { order: {seenNum: 'DESC'}});
+            console.log("popularEpisodes", popularEpisodes)
+            return {
+                ok: true,
+                popularEpisodes
+            }
+        } catch(error) {
+            console.log("error", error);
+            return {
+                ok: false, 
+                error
+            }
+        }
+    }
     
 
     // async searchPodcasts( {query, page, takeNumber}:SearchPodcastInput

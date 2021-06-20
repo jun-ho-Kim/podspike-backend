@@ -2,7 +2,7 @@ import { Field, InputType, ObjectType } from "@nestjs/graphql";
 import { IsNumber, IsString } from "class-validator";
 import { userInfo } from "node:os";
 import { User } from "server/user/entity/user.entity";
-import { Column, Entity, ManyToMany, ManyToOne } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne } from "typeorm";
 import { CoreEntity } from "../../common/entities/coreEntity";
 import { CoreOutput } from "../../common/output.dto";
 import { Podcast } from "./podcast.entity";
@@ -15,16 +15,17 @@ export class Episode extends CoreEntity {
     @Field(type => String)
     @IsString()
     title: string;
-
+    
     @Column()
     @Field(type => String)
     @IsString()
     description: string;
-
+    
     @Column()
-    @Field(type => String, {nullable: true})
-    @IsString()
-    episodeImg?: string;
+    @Field(type => Number, {defaultValue: 0, nullable: true})
+    @IsNumber()
+    seenNum?: number;
+
 
     @ManyToOne(() => Podcast, (podcast) => podcast.episodes, {eager: true})
     @Field(() => Podcast)
@@ -52,5 +53,7 @@ export class Episode extends CoreEntity {
         type => User,
         user => user.sawEpisode
     )
+    @JoinTable()
     seenUser: User;
+
 }
