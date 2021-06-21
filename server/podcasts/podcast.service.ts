@@ -19,7 +19,7 @@ import { CategoriesInput, CategoriesOutput } from "./dto/categories";
 import { GetEpisodeDetailInput, GetEpisodeDetailOutput } from "./dto/getPodcastDetail";
 import { MyPodcastsOutput } from "server/user/dto/myPodcasts.dto";
 import { SubscriptionOutput } from "../user/dto/subscriptions";
-import { PopularEpisodesOutput } from "./dto/popular-episode";
+import { PopularEpisodesOutput, PopularPodcastsOutput } from "./dto/popular";
 
 @Injectable()
 export class PodcastService {
@@ -35,9 +35,11 @@ export class PodcastService {
 
     async getAllPodcast(): Promise<GetAllPodcastOutput>{
         const podcast = await this.podcasts.find({
-            relations: ['episodes', 'host', 'subscriber']
+            relations: ['episodes', 'host', 'subscriber'],
+            order: {createdAt: "DESC"},
         }
         );
+        
         if(!podcast) {
             return {
                 ok: false,
@@ -151,6 +153,21 @@ export class PodcastService {
                 }
             }
     };
+
+    async popularPodcasts(): Promise<PopularPodcastsOutput> {
+        try {
+            const popularPodcasts = await this.podcasts.find({
+                order: {'subscriber': "DESC"},
+                take: 20
+            })
+            return {
+                ok: true,
+                popularPodcasts,
+            }
+        } catch(error) {
+            console.log("popularPodcasts Error", error)
+        }
+    }
 
 
     async getAllEpisode({id: podcastId}: GetEpisodeInput): Promise<GetEpisodeOutput> {
@@ -312,7 +329,7 @@ export class PodcastService {
     async popularEpisode(): Promise<PopularEpisodesOutput> {
         try {
             const popularEpisodes  = await this.episodes.find(
-                { order: {seenNum: 'DESC'}});
+                { order: {seenNum: 'DESC'}, take: 20});
             console.log("popularEpisodes", popularEpisodes)
             return {
                 ok: true,
