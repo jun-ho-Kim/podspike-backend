@@ -75,6 +75,12 @@ export class PodcastResolver {
         return this.podcastService.popularPodcasts();
     }
 
+    @Role(['Listener'])
+    @Query(returns => GetAllPodcastOutput)
+    recentPodcasts(): Promise<GetAllPodcastOutput> {
+        return this.podcastService.recentPodcast();
+    }
+
     @Query(returns => GetEpisodeOutput)
     getAllEpisode(@Args('input') getEpisodeInput: GetEpisodeInput
     ): Promise<GetEpisodeOutput> {

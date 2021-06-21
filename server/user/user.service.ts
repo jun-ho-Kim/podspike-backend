@@ -150,9 +150,13 @@ export class UserService {
             }
             if(user.subscriptions.some((sub) => sub.id === podcast.id)) {
                 user.subscriptions = user.subscriptions.filter((sub) => sub.id !== podcast.id)
+                podcast.subscriberNum += 1;
+                await this.podcasts.save(podcast);
                 return {ok: true} 
             } else {
                 user.subscriptions = [...user.subscriptions, podcast];
+                podcast.subscriberNum -= 1;
+                await this.podcasts.save(podcast);
                 return {ok: true} 
             }
         } catch {

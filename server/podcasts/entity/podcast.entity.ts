@@ -44,6 +44,11 @@ export class Podcast extends CoreEntity {
     @JoinTable()
     subscriber?: User;
 
+    @Column()
+    @Field(type => Number, {nullable: true, defaultValue: 0})
+    @IsNumber()
+    subscriberNum?: number;
+
     @Field(type => [Episode], { nullable: true })
     @OneToMany(() => Episode, (episode) => episode.podcast, {
         cascade: true,

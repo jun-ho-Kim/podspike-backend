@@ -66,6 +66,7 @@ export class PodcastService {
                     thumbnail,
                     rating: 0,
                     host,
+                    subscriberNum: 0,
                 })
             );
             return {
@@ -154,10 +155,31 @@ export class PodcastService {
             }
     };
 
+    async recentPodcast(): Promise<GetAllPodcastOutput>{
+        const podcast = await this.podcasts.find({
+            // relations: ['episodes', 'host', 'subscriber'],
+            order: {createdAt: "DESC"},
+            take: 6,
+        }
+        );
+        
+        if(!podcast) {
+            return {
+                ok: false,
+                error: "Podcast not found",
+                podcast,
+            }
+        };
+        return {
+            ok: true,
+            podcast,
+        }
+    }
+
     async popularPodcasts(): Promise<PopularPodcastsOutput> {
         try {
             const popularPodcasts = await this.podcasts.find({
-                order: {'subscriber': "DESC"},
+                order: {'subscriberNum': 'DESC'},
                 take: 20
             })
             return {
