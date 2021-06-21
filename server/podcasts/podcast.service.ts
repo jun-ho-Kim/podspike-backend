@@ -97,8 +97,15 @@ export class PodcastService {
         };
     };
 
-    async deletePodcast(id: number): Promise<CoreOutput>{
+    async deletePodcast(user, id: number): Promise<CoreOutput>{
         try {
+            const podcast = await this.podcasts.findOne(id);
+            if(podcast.hostId !== user.id) {
+                return {
+                    ok: false,
+                    error: "방송을 삭제할 권한이 없습니다."
+                }
+            }
             await this.podcasts.delete(id)
             return {
                 ok: true
@@ -110,10 +117,21 @@ export class PodcastService {
             }
         }
     };
-    async updatePodcast({id, ...updateData}: UpdatePodcastInput): Promise<UpdatePodcastOutput> {
+    async updatePodcast(user, {id, ...updateData}: UpdatePodcastInput): Promise<UpdatePodcastOutput> {
         const podcast = await this.podcasts.findOne(id);
+        if(!podcast) {
+            return {
+                ok: false,
+                error: "방송이 존재하지 않습니다."
+            }
+        };
+        if(podcast.hostId !== user.id) {
+            return {
+                ok: false,
+                error: "방송을 수정할 권한이 없습니다."
+            }
+        }
         if(podcast) {
-            this.deletePodcast(id);
             this.podcasts.save({
                 ...podcast, ...updateData
             })
@@ -157,7 +175,7 @@ export class PodcastService {
 
     async recentPodcast(): Promise<GetAllPodcastOutput>{
         const podcast = await this.podcasts.find({
-            // relations: ['episodes', 'host', 'subscriber'],
+            relations: ['episodes', 'host', 'subscriber'],
             order: {createdAt: "DESC"},
             take: 6,
         }
@@ -214,12 +232,18 @@ export class PodcastService {
         };
     };
 
-    async CreateEpisode({id, title, description, seenNum, audioUrl, audioLength}: CreateEpisodeInput): Promise<CreateEpisodeOutput> {
+    async CreateEpisode(user, {id, title, episodeImg, description, seenNum, audioUrl, audioLength}: CreateEpisodeInput): Promise<CreateEpisodeOutput> {
         try{
             // if(episodeImg === undefined) {
             //     episodeImg = "";
             // }
             const {podcast} = await this.getPodcastOne(id);
+            if(podcast.hostId !== user.id) {
+                return {
+                    ok: false,
+                    error: "에피소드를 생성할 권한이 없습니다."
+                }
+            }
             const episode = await this.episodes.save(
                 this.episodes.create({
                     title,
@@ -228,6 +252,7 @@ export class PodcastService {
                     audioUrl,
                     audioLength,
                     seenNum,
+                    episodeImg: "",
                 })    
             );
             return {
@@ -256,9 +281,22 @@ export class PodcastService {
         }
     };
 
-    async updateEpisode({id, ...rest}: UpdateEpisodeInput): Promise<UpdateEpisodeOutput> {
+    async updateEpisode(user, {id, ...rest}: UpdateEpisodeInput): Promise<UpdateEpisodeOutput> {
         try {
             const episode = await this.episodes.findOne(id);
+            if(!episode) {
+                return {
+                    ok: false,
+                    error: "에피소드가 존재하지 않습니다."
+                }
+            };
+            if(episode.podcast.hostId !== user.id) {
+                return {
+                    ok: false,
+                    error: "에피소드를 수정할 권한이 없습니다."
+                }
+            }
+
             this.episodes.save({...episode, ...rest});
             return {
                 ok: true,
@@ -351,7 +389,7 @@ export class PodcastService {
     async popularEpisode(): Promise<PopularEpisodesOutput> {
         try {
             const popularEpisodes  = await this.episodes.find(
-                { order: {seenNum: 'DESC'}, take: 20});
+                { order: {seenNum: 'DESC'}, take: 6});
             console.log("popularEpisodes", popularEpisodes)
             return {
                 ok: true,

@@ -20,6 +20,11 @@ export class Episode extends CoreEntity {
     @Field(type => String)
     @IsString()
     description: string;
+
+    @Column()
+    @Field(type => String, {nullable: true})
+    @IsString()
+    episodeImg?: string;
     
     @Column()
     @Field(type => Number, {defaultValue: 0, nullable: true})

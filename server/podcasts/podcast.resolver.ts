@@ -50,16 +50,20 @@ export class PodcastResolver {
 
     @Role(["Host"])
     @Mutation(returns => UpdatePodcastOutput)
-    updatePodcast(@Args('input') updatePodcastInput: UpdatePodcastInput
+    updatePodcast(
+        @AuthUser() user: User,
+        @Args('input') updatePodcastInput: UpdatePodcastInput
     ): Promise<UpdatePodcastOutput> { 
-        return this.podcastService.updatePodcast(updatePodcastInput);
+        return this.podcastService.updatePodcast(user, updatePodcastInput);
     };
 
     @Role(["Host"])
     @Mutation(returns => CoreOutput)
-    deletePodcast(@Args('input') {id}: PodcastSearchInput
+    deletePodcast(
+        @AuthUser() user: User,
+        @Args('input') {id}: PodcastSearchInput
     ): Promise<CoreOutput> {
-        return this.podcastService.deletePodcast(id);
+        return this.podcastService.deletePodcast(user, id);
     };
 
     @Role(['Listener'])
@@ -90,16 +94,18 @@ export class PodcastResolver {
     @Role(["Host"])
     @Mutation(returns => CreateEpisodeOutput)
     createEpisode(
+        @AuthUser() user: User,
         @Args('input') createEpisodeInput: CreateEpisodeInput
     ): Promise<CreateEpisodeOutput> {
-        return this.podcastService.CreateEpisode(createEpisodeInput);
+        return this.podcastService.CreateEpisode(user, createEpisodeInput);
     };
     @Role(["Host"])
     @Mutation(returns => UpdateEpisodeOutput)
     updateEpisode(
+        @AuthUser() user:User,
         @Args('input') updateEpisodeInput: UpdateEpisodeInput
     ): Promise<UpdateEpisodeOutput> {
-        return this.podcastService.updateEpisode(updateEpisodeInput);
+        return this.podcastService.updateEpisode(user, updateEpisodeInput);
     };
     @Role(["Host"])
     @Mutation(returns => CoreOutput)
