@@ -52,7 +52,7 @@ export class UserService {
                     user,
                 }
             } catch(error) {
-                console.log(" createAccount error": error)
+                console.log(" createAccount error", error)
                 return {
                     ok: false,
                     error: "User not created"
