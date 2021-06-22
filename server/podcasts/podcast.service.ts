@@ -33,10 +33,12 @@ export class PodcastService {
     ) {}
 
 
-    async getAllPodcast(): Promise<GetAllPodcastOutput>{
+    async getAllPodcast(page): Promise<GetAllPodcastOutput>{
         const podcast = await this.podcasts.find({
             relations: ['episodes', 'host', 'subscriber'],
             order: {createdAt: "DESC"},
+            skip: (page-1) * 6,
+            take: 6
         }
         );
         
@@ -50,6 +52,7 @@ export class PodcastService {
         return {
             ok: true,
             podcast,
+
         }
     }
         
@@ -194,7 +197,7 @@ export class PodcastService {
         }
     }
 
-    async popularPodcasts(): Promise<PopularPodcastsOutput> {
+    async popularPodcasts(page): Promise<PopularPodcastsOutput> {
         try {
             const popularPodcasts = await this.podcasts.find({
                 order: {'subscriberNum': 'DESC'},
@@ -217,6 +220,7 @@ export class PodcastService {
         }
         const episodes = await this.episodes.find({
             relations: ['seenUser'],
+            order: {updateAt: "DESC"},
             where: {podcast: {id: podcastId}}
         });
         console.log("getAllEpisode", episodes)
@@ -252,7 +256,7 @@ export class PodcastService {
                     audioUrl,
                     audioLength,
                     seenNum,
-                    episodeImg: "",
+                    episodeImg,
                 })    
             );
             return {
@@ -386,14 +390,21 @@ export class PodcastService {
         }
     };
 
-    async popularEpisode(): Promise<PopularEpisodesOutput> {
+    async popularEpisode(page): Promise<PopularEpisodesOutput> {
         try {
-            const popularEpisodes  = await this.episodes.find(
-                { order: {seenNum: 'DESC'}, take: 6});
+            const [popularEpisodes, popularEpisodesCount  ] = await this.episodes.findAndCount({ 
+                    order: {seenNum: 'DESC'}, 
+                    take: 6,
+                    skip: (page-1) * 6,
+                });
             console.log("popularEpisodes", popularEpisodes)
             return {
                 ok: true,
-                popularEpisodes
+                popularEpisodes,
+                totalPage: Math.ceil(popularEpisodesCount/6),
+                totalResults : popularEpisodesCount,
+                currentCount: 6,
+                currentPage: page,
             }
         } catch(error) {
             console.log("error", error);

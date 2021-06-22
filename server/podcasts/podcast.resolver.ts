@@ -7,7 +7,7 @@ import { CreatePodcastInput, CreatePodcastOutput } from "./dto/create-podcast.dt
 import { UpdatePodcastOutput, UpdatePodcastInput } from "./dto/update-podcast";
 import { CoreOutput } from "../common/output.dto";
 import { UpdateEpisodeOutput, UpdateEpisodeInput } from "./dto/update-episode";
-import { GetAllPodcastOutput, GetPodcastInput, GetPodcastOutput } from "./dto/get-podcast";
+import { GetAllPodcastInput, GetAllPodcastOutput, GetPodcastInput, GetPodcastOutput } from "./dto/get-podcast";
 import { GetEpisodeInput, GetEpisodeOutput } from "./dto/get-episode";
 import { EpisodeSearchInput, PodcastSearchInput } from "./dto/podcast.dto";
 import { UseGuards } from "@nestjs/common";
@@ -21,7 +21,7 @@ import { AuthUser } from "server/auth/auth.user";
 import { CategoriesInput, CategoriesOutput } from "./dto/categories";
 import { GetEpisodeDetailInput, GetEpisodeDetailOutput } from "./dto/getPodcastDetail";
 import { MyPodcastsOutput } from "server/user/dto/myPodcasts.dto";
-import { PopularEpisodesOutput, PopularPodcastsOutput } from "./dto/popular";
+import { PopularEpisodesInput, PopularEpisodesOutput, PopularPodcastInput, PopularPodcastsOutput } from "./dto/popular";
 
 @Resolver(of => Podcast)
 export class PodcastResolver {
@@ -30,8 +30,10 @@ export class PodcastResolver {
     ) {}
 
     @Query(returns => GetAllPodcastOutput)
-    getPodcast(): Promise<GetAllPodcastOutput> {
-        return this.podcastService.getAllPodcast();
+    getPodcast(
+        @Args('input') {page}: GetAllPodcastInput
+    ): Promise<GetAllPodcastOutput> {
+        return this.podcastService.getAllPodcast(page);
     };
     @Role(["Host"])
     @Mutation(returns => CreatePodcastOutput)
@@ -75,8 +77,10 @@ export class PodcastResolver {
 
     @Role(['Listener'])
     @Query(returns => PopularPodcastsOutput)
-    popularPodcasts(): Promise<PopularPodcastsOutput> {
-        return this.podcastService.popularPodcasts();
+    popularPodcasts(
+        @Args('input') {page} : PopularPodcastInput
+    ): Promise<PopularPodcastsOutput> {
+        return this.podcastService.popularPodcasts(page);
     }
 
     @Role(['Listener'])
@@ -149,8 +153,9 @@ export class PodcastResolver {
     @Role(['Listener'])
     @Query(returns => PopularEpisodesOutput)
     popularEpisodes(
+        @Args('input') {page} :PopularEpisodesInput
     ): Promise<PopularEpisodesOutput> {
-        return this.podcastService.popularEpisode();
+        return this.podcastService.popularEpisode(page);
     };
 
 

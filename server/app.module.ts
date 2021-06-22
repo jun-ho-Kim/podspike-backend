@@ -47,7 +47,7 @@ import { UploadsModule } from './uploads/uploads.module';
     UploadsModule,
     GraphQLModule.forRoot({
       cors: {
-        origin: 'http://localhost:3000',
+        origin: 'https://fervent-kare-84a25b.netlify.app',
         crdentails: true,
       },
       playground: true,
