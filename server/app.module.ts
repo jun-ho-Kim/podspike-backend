@@ -46,10 +46,10 @@ import { UploadsModule } from './uploads/uploads.module';
     AuthModule,
     UploadsModule,
     GraphQLModule.forRoot({
-      cors: {
-        origin: 'https://fervent-kare-84a25b.netlify.app',
-        crdentails: true,
-      },
+      // cors: {
+      //   origin: 'https://fervent-kare-84a25b.netlify.app',
+      //   crdentails: true,
+      // },
       playground: true,
       introspection: true,
       autoSchemaFile: true ,

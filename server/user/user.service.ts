@@ -44,7 +44,7 @@ export class UserService {
                     passwordConfirm,
                     role,
                     nickName,
-                    profilePhoto:"",
+                    profilePhoto: 'https://',
                 })
                 await this.users.save(user)
                 return {

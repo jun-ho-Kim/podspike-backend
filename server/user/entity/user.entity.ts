@@ -26,9 +26,9 @@ export class User extends CoreEntity {
     nickName: string;
 
     @Column()
-    @Field(type => String)
+    @Field(type => String, {nullable: true})
     @IsString()
-    profilePhoto: string;
+    profilePhoto?: string;
 
     @Column()
     @Field(type => String)
