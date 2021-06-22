@@ -28,7 +28,7 @@ export class UserService {
         private readonly jwtService: JwtService,
     ) {}
 
-    async createAccount({email, password, passwordConfirm, role, nickName, profilePhoto}: CreateAccountInput
+    async createAccount({email, password, passwordConfirm, role, nickName}: CreateAccountInput
         ): Promise<CreateAccountOutput> {
             const exist = await this.users.findOne({email});
             if(exist) {
@@ -44,14 +44,15 @@ export class UserService {
                     passwordConfirm,
                     role,
                     nickName,
-                    profilePhoto,
+                    profilePhoto:"",
                 })
                 await this.users.save(user)
                 return {
                     ok: true,
                     user,
                 }
-            } catch {
+            } catch(error) {
+                console.log(" createAccount error": error)
                 return {
                     ok: false,
                     error: "User not created"
