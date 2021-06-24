@@ -28,7 +28,7 @@ export class UploadController {
                 Key: objectName,
                 Body: file.buffer,
                 Bucket: BUCKET_NAME,
-                ACL: 'bucket-owner-full-control',
+                ACL: 'public-read',
             }).promise();
             const url = `https://${BUCKET_NAME}.s3.amazonaws.com/${objectName}`
             console.log("upload", upload);

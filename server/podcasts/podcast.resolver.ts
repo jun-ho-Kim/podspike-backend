@@ -117,7 +117,7 @@ export class PodcastResolver {
    ): Promise<CoreOutput> {
         return this.podcastService.deleteEpisode(episodeSearchInput);
     };
-
+    @Role(["Listener"])
     @Query(returns => CategoriesOutput)
     categories(@Args('input') categoriesInput: CategoriesInput
     ): Promise<CategoriesOutput> {

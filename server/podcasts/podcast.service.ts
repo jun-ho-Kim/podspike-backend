@@ -103,7 +103,7 @@ export class PodcastService {
     async deletePodcast(user, id: number): Promise<CoreOutput>{
         try {
             const podcast = await this.podcasts.findOne(id);
-            if(podcast.hostId !== user.id) {
+            if(podcast.host.id !== user.id) {
                 return {
                     ok: false,
                     error: "방송을 삭제할 권한이 없습니다."
@@ -242,7 +242,7 @@ export class PodcastService {
             //     episodeImg = "";
             // }
             const {podcast} = await this.getPodcastOne(id);
-            if(podcast.hostId !== user.id) {
+            if(podcast.host.id !== user.id) {
                 return {
                     ok: false,
                     error: "에피소드를 생성할 권한이 없습니다."
@@ -294,7 +294,7 @@ export class PodcastService {
                     error: "에피소드가 존재하지 않습니다."
                 }
             };
-            if(episode.podcast.hostId !== user.id) {
+            if(episode.podcast.host.id !== user.id) {
                 return {
                     ok: false,
                     error: "에피소드를 수정할 권한이 없습니다."
