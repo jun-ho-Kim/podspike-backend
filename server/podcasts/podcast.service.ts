@@ -201,6 +201,7 @@ export class PodcastService {
         try {
             const popularPodcasts = await this.podcasts.find({
                 order: {'subscriberNum': 'DESC'},
+                skip: (page-1) * 20,
                 take: 20
             })
             return {
